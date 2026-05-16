@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout — Afreen Traders</title>
+    <meta name="description" content="Complete your Afreen Traders premium tea order securely.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="checkout.css">
+    <style>
+        /* Auth step styles */
+        .auth-confirmed {
+            display:flex; align-items:center; gap:1rem;
+            padding:1.2rem; background:var(--bg-glass); border:1px solid var(--border);
+            border-radius:var(--radius-sm); margin-bottom:1.5rem;
+        }
+        .auth-confirmed-icon { flex-shrink:0; }
+        .auth-confirmed-info { flex:1; }
+        .auth-confirmed-name { font-weight:600; font-size:0.95rem; }
+        .auth-confirmed-email { font-size:0.8rem; color:var(--text-muted); }
+        .auth-change-btn { font-size:0.8rem; color:var(--gold); transition:opacity var(--transition); }
+        .auth-change-btn:hover { opacity:0.7; }
+        .auth-guest-box { padding:1.5rem; background:var(--bg-glass); border:1px solid var(--border); border-radius:var(--radius-sm); margin-bottom:1.5rem; }
+        .auth-guest-text { color:var(--text-secondary); font-size:0.9rem; margin-bottom:1.2rem; }
+        .auth-guest-actions { display:flex; gap:1rem; flex-wrap:wrap; }
+        .auth-login-btn { flex:1; min-width:140px; justify-content:center; }
+        /* Processing Overlay */
+        .processing-overlay {
+            position:fixed; inset:0; z-index:9999;
+            background:rgba(10,10,10,0.95);
+            display:none; align-items:center; justify-content:center;
+            flex-direction:column; gap:1.5rem;
+        }
+        .processing-overlay.show { display:flex; }
+        .processing-spinner {
+            width:60px; height:60px; border:3px solid var(--border);
+            border-top-color:var(--gold); border-radius:50%;
+            animation:spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .processing-text { font-family:var(--font-display); font-size:1.3rem; color:var(--gold); letter-spacing:0.1em; }
+        .processing-sub { font-size:0.85rem; color:var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <!-- Processing Overlay -->
+    <div class="processing-overlay" id="processing-overlay">
+        <div class="processing-spinner"></div>
+        <div class="processing-text">Processing Payment</div>
+        <div class="processing-sub">Please wait while we verify your order...</div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">☕</span>
+                <span class="logo-text">AFREEN TRADERS</span>
+            </a>
+            <div class="nav-actions">
+                <a href="index.html" class="back-link">← Back to Shop</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Checkout Main -->
+    <main class="checkout-main">
+        <div class="container">
+            <div class="checkout-header">
+                <p class="section-subtitle">✦ SECURE CHECKOUT ✦</p>
+                <h1 class="section-title">Complete Your Order</h1>
+            </div>
+
+            <!-- Progress Bar (3 steps) -->
+            <div class="progress-bar" id="progress-bar">
+                <div class="progress-step active" data-step="1">
+                    <div class="step-circle">1</div>
+                    <span class="step-label">Contact</span>
+                </div>
+                <div class="progress-line"><div class="progress-fill" id="progress-fill-1"></div></div>
+                <div class="progress-step" data-step="2">
+                    <div class="step-circle">2</div>
+                    <span class="step-label">Shipping</span>
+                </div>
+                <div class="progress-line"><div class="progress-fill" id="progress-fill-2"></div></div>
+                <div class="progress-step" data-step="3">
+                    <div class="step-circle">3</div>
+                    <span class="step-label">Payment</span>
+                </div>
+            </div>
+
+            <div class="checkout-grid">
+                <!-- Left: Steps -->
+                <div class="checkout-steps">
+
+                    <!-- Step 1: Contact / Auth -->
+                    <section class="checkout-section active" id="step-1">
+                        <h2 class="step-title">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            Contact Information
+                        </h2>
+                        <div id="auth-check-content">
+                            <!-- Rendered by JS: auth state or guest prompt -->
+                        </div>
+                        <button class="btn btn-primary btn-next" id="btn-auth-next">
+                            <span>Continue to Shipping</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                    </section>
+
+                    <!-- Step 2: Shipping Address -->
+                    <section class="checkout-section" id="step-2">
+                        <h2 class="step-title">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Shipping Address
+                        </h2>
+                        <form id="delivery-form" class="delivery-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="full-name">Full Name *</label>
+                                    <input type="text" id="full-name" placeholder="Enter your full name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone Number *</label>
+                                    <input type="tel" id="phone" placeholder="Enter 10-digit number" required pattern="[0-9]{10}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="address">Address *</label>
+                                <textarea id="address" placeholder="Enter your delivery address" required rows="3"></textarea>
+                            </div>
+                            <div class="form-row form-row-3">
+                                <div class="form-group">
+                                    <label for="city">City *</label>
+                                    <input type="text" id="city" placeholder="City" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="state">State *</label>
+                                    <input type="text" id="state" placeholder="State" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pincode">Pincode *</label>
+                                    <input type="text" id="pincode" placeholder="6-digit PIN" required pattern="[0-9]{6}">
+                                </div>
+                            </div>
+                            <div class="payment-actions">
+                                <button type="button" class="btn btn-secondary" id="btn-back-auth">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                                    <span>Back</span>
+                                </button>
+                                <button type="submit" class="btn btn-primary btn-next" style="flex:1">
+                                    <span>Continue to Payment</span>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                </button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <!-- Step 3: Payment -->
+                    <section class="checkout-section" id="step-3">
+                        <h2 class="step-title">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                            Payment via UPI
+                        </h2>
+
+                        <!-- QR Card -->
+                        <div class="qr-card">
+                            <div class="qr-header">
+                                <h3>Scan &amp; Pay Securely</h3>
+                                <p>Use any UPI app to complete your payment</p>
+                            </div>
+                            <div class="qr-image-wrap">
+                                <img src="images/qr-code.png" alt="UPI QR Code" class="qr-image" id="qr-image">
+                            </div>
+                            <div class="qr-details">
+                                <div class="upi-info">
+                                    <div class="upi-row">
+                                        <span class="upi-label">UPI ID</span>
+                                        <div class="upi-value-wrap">
+                                            <span class="upi-value" id="upi-id">vendikatla1@ptaxis</span>
+                                            <button class="copy-btn" id="copy-upi" title="Copy UPI ID">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="upi-row">
+                                        <span class="upi-label">Account Name</span>
+                                        <span class="upi-value">VENDIKATLA MASTHAN</span>
+                                    </div>
+                                    <div class="upi-row">
+                                        <span class="upi-label">Amount to Pay</span>
+                                        <span class="upi-value upi-amount" id="upi-amount">₹0</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="upi-apps">
+                                <span class="upi-apps-label">Supported Apps</span>
+                                <div class="upi-apps-list">
+                                    <div class="upi-app"><span class="upi-app-icon">📱</span><span>Paytm</span></div>
+                                    <div class="upi-app"><span class="upi-app-icon">💜</span><span>PhonePe</span></div>
+                                    <div class="upi-app"><span class="upi-app-icon">🔵</span><span>GPay</span></div>
+                                    <div class="upi-app"><span class="upi-app-icon">🏛️</span><span>BHIM</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Screenshot Upload -->
+                        <div class="upload-section">
+                            <h3 class="upload-title">Upload Payment Screenshot</h3>
+                            <p class="upload-desc">After completing the payment, upload a screenshot as proof</p>
+                            <div class="upload-area" id="upload-area">
+                                <input type="file" id="screenshot-input" accept="image/*" class="upload-input">
+                                <div class="upload-placeholder" id="upload-placeholder">
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                    <span>Click or drag to upload screenshot</span>
+                                    <small>JPG, PNG up to 5MB</small>
+                                </div>
+                                <div class="upload-preview" id="upload-preview" style="display:none;">
+                                    <img id="preview-img" alt="Payment screenshot preview">
+                                    <button class="remove-preview" id="remove-preview">✕ Remove</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="payment-actions">
+                            <button class="btn btn-secondary" id="btn-back-shipping">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                                <span>Back</span>
+                            </button>
+                            <button class="btn btn-primary btn-pay" id="btn-paid" disabled>
+                                <span>I Have Paid ✓</span>
+                            </button>
+                        </div>
+                    </section>
+
+                </div>
+
+                <!-- Right: Order Summary -->
+                <aside class="order-summary-panel" id="order-summary-panel">
+                    <div class="summary-card">
+                        <h3 class="summary-card-title">Order Summary</h3>
+                        <div class="summary-items" id="summary-items"></div>
+                        <div class="summary-breakdown">
+                            <div class="summary-row"><span>Subtotal</span><span id="sum-subtotal">₹0</span></div>
+                            <div class="summary-row" id="sum-discount-row" style="display:none;"><span>Discount</span><span class="discount-value" id="sum-discount">-₹0</span></div>
+                            <div class="summary-row"><span>Delivery</span><span id="sum-delivery">₹0</span></div>
+                            <div class="summary-row summary-total"><span>Total</span><span id="sum-total">₹0</span></div>
+                        </div>
+                    </div>
+                    <div class="mobile-sticky-bar" id="mobile-sticky">
+                        <div class="sticky-total">
+                            <span>Total</span>
+                            <span class="sticky-amount" id="sticky-total">₹0</span>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Afreen Traders. All rights reserved. Secure checkout.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="store.js"></script>
+    <script src="checkout.js"></script>
+</body>
+</html>

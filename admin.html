@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel — Afreen Traders</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <!-- Admin Auth Gate -->
+    <div class="admin-gate" id="admin-gate">
+        <div class="gate-card">
+            <div class="gate-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            </div>
+            <h2 class="gate-title">Admin Access</h2>
+            <p class="gate-desc">Sign in with admin credentials</p>
+            <form id="admin-login-form">
+                <div class="form-group">
+                    <label for="admin-email">Email</label>
+                    <input type="email" id="admin-email" placeholder="admin@afreentraders.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="admin-password">Password</label>
+                    <input type="password" id="admin-password" placeholder="Admin password" required>
+                </div>
+                <div class="gate-error" id="gate-error" style="display:none;"></div>
+                <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;"><span>Login</span></button>
+            </form>
+            <a href="index.html" style="display:block;text-align:center;margin-top:1rem;font-size:0.85rem;color:var(--text-muted);">← Back to Shop</a>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard (hidden until authenticated) -->
+    <div class="admin-dashboard" id="admin-dashboard" style="display:none;">
+        <nav class="navbar scrolled" id="navbar">
+            <div class="container nav-container">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">☕</span>
+                    <span class="logo-text">AFREEN TRADERS</span>
+                </a>
+                <div class="nav-actions" style="display:flex;align-items:center;gap:1.5rem;">
+                    <span style="font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;">Admin Panel</span>
+                    <button id="admin-logout" class="btn btn-secondary" style="padding:0.5rem 1rem;font-size:0.75rem;"><span>Logout</span></button>
+                </div>
+            </div>
+        </nav>
+
+        <main class="admin-main">
+            <div class="container">
+                <div class="admin-header">
+                    <h1 class="admin-title">Dashboard</h1>
+                    <p class="admin-subtitle">Manage orders and track business</p>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid" id="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Orders</div>
+                        <div class="stat-value" id="stat-orders">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Revenue</div>
+                        <div class="stat-value" id="stat-revenue">₹0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Pending</div>
+                        <div class="stat-value" id="stat-pending">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Customers</div>
+                        <div class="stat-value" id="stat-customers">0</div>
+                    </div>
+                </div>
+
+                <!-- Orders Table -->
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h2>Recent Orders</h2>
+                        <div class="filter-btns">
+                            <button class="filter-btn active" data-filter="all">All</button>
+                            <button class="filter-btn" data-filter="Pending">Pending</button>
+                            <button class="filter-btn" data-filter="Approved">Approved</button>
+                            <button class="filter-btn" data-filter="Shipped">Shipped</button>
+                        </div>
+                    </div>
+                    <div class="orders-table-wrap">
+                        <table class="orders-table" id="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-tbody"></tbody>
+                        </table>
+                        <div class="empty-orders" id="empty-orders" style="display:none;">
+                            <p>No orders found.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div class="modal-overlay" id="order-modal" style="display:none;">
+        <div class="modal-card">
+            <button class="modal-close" id="modal-close">✕</button>
+            <h3 class="modal-title" id="modal-order-id">Order Details</h3>
+            <div id="modal-content"></div>
+        </div>
+    </div>
+
+    <script src="store.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account — Afreen Traders</title>
+    <meta name="description" content="Manage your Afreen Traders account, view orders, and track deliveries.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Profile Page */
+        .profile-page { padding:6rem 0 4rem; min-height:100vh; }
+        .profile-grid { display:grid; grid-template-columns:260px 1fr; gap:2.5rem; align-items:start; }
+
+        /* Sidebar */
+        .profile-sidebar {
+            background:var(--bg-card); border:1px solid var(--border);
+            border-radius:var(--radius); padding:2rem 1.5rem;
+            position:sticky; top:6rem;
+        }
+        .profile-avatar {
+            width:80px; height:80px; border-radius:50%;
+            background:linear-gradient(135deg,var(--green-deep),var(--green-mid));
+            display:flex; align-items:center; justify-content:center;
+            font-family:var(--font-display); font-size:2rem; color:var(--gold);
+            margin:0 auto 1rem; border:2px solid var(--gold);
+        }
+        .profile-name { text-align:center; font-family:var(--font-display); font-size:1.3rem; margin-bottom:0.2rem; }
+        .profile-email { text-align:center; color:var(--text-muted); font-size:0.8rem; margin-bottom:1.5rem; }
+        .profile-nav { list-style:none; }
+        .profile-nav li { margin-bottom:0.2rem; }
+        .profile-nav-btn {
+            width:100%; text-align:left; padding:0.75rem 1rem;
+            border-radius:var(--radius-sm); font-size:0.85rem;
+            color:var(--text-secondary); background:transparent;
+            border:none; transition:all var(--transition);
+            display:flex; align-items:center; gap:0.7rem; cursor:pointer;
+        }
+        .profile-nav-btn:hover { color:var(--gold); background:rgba(201,168,76,0.05); }
+        .profile-nav-btn.active { color:var(--gold); background:rgba(201,168,76,0.1); font-weight:600; }
+        .profile-nav-btn svg { width:18px; height:18px; flex-shrink:0; }
+        .profile-logout { border-top:1px solid var(--border); padding-top:1rem; margin-top:1rem; }
+        .profile-logout .profile-nav-btn { color:#e74c3c; }
+        .profile-logout .profile-nav-btn:hover { background:rgba(231,76,60,0.08); }
+
+        /* Content Panels */
+        .profile-panel { display:none; animation:fadeSlide 0.4s ease; }
+        .profile-panel.active { display:block; }
+        @keyframes fadeSlide { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+        .panel-title { font-family:var(--font-display); font-size:1.6rem; font-weight:400; margin-bottom:0.3rem; }
+        .panel-subtitle { color:var(--text-muted); font-size:0.85rem; margin-bottom:2rem; }
+
+        /* Detail Card */
+        .detail-card {
+            background:var(--bg-card); border:1px solid var(--border);
+            border-radius:var(--radius); padding:1.5rem; margin-bottom:1.5rem;
+        }
+        .detail-row { display:flex; justify-content:space-between; align-items:center; padding:0.8rem 0; border-bottom:1px solid rgba(255,255,255,0.03); }
+        .detail-row:last-child { border-bottom:none; }
+        .detail-label { font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; }
+        .detail-value { font-size:0.9rem; color:var(--text-primary); font-weight:500; }
+
+        /* Orders */
+        .order-card {
+            background:var(--bg-card); border:1px solid var(--border);
+            border-radius:var(--radius); padding:1.5rem; margin-bottom:1rem;
+            transition:all var(--transition);
+        }
+        .order-card:hover { border-color:var(--border-gold); }
+        .order-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem; }
+        .order-id { font-family:var(--font-display); font-size:1.1rem; color:var(--gold); }
+        .order-status {
+            font-size:0.7rem; padding:0.3rem 0.8rem; border-radius:20px;
+            text-transform:uppercase; letter-spacing:0.08em; font-weight:600;
+        }
+        .order-status.pending { background:rgba(201,168,76,0.15); color:var(--gold); }
+        .order-status.shipped { background:rgba(45,106,79,0.2); color:var(--green-light); }
+        .order-status.approved { background:rgba(45,106,79,0.2); color:var(--green-light); }
+        .order-status.rejected { background:rgba(231,76,60,0.15); color:#e74c3c; }
+        .order-items { font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.5rem; }
+        .order-meta { display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-muted); }
+        .order-total { color:var(--gold); font-weight:600; font-size:0.95rem; }
+
+        /* Wishlist */
+        .wishlist-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1.5rem; }
+        .wishlist-card {
+            background:var(--bg-card); border:1px solid var(--border);
+            border-radius:var(--radius); overflow:hidden; transition:all var(--transition);
+        }
+        .wishlist-card:hover { border-color:var(--border-gold); transform:translateY(-3px); }
+        .wishlist-img { height:160px; overflow:hidden; background:var(--bg-secondary); }
+        .wishlist-img img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s; }
+        .wishlist-card:hover .wishlist-img img { transform:scale(1.05); }
+        .wishlist-info { padding:1.2rem; }
+        .wishlist-name { font-family:var(--font-display); font-size:1rem; margin-bottom:0.5rem; }
+        .wishlist-actions { display:flex; gap:0.5rem; }
+        .wl-btn {
+            flex:1; padding:0.5rem; border-radius:var(--radius-sm);
+            font-size:0.75rem; font-weight:600; text-transform:uppercase;
+            letter-spacing:0.05em; transition:all var(--transition);
+            text-align:center;
+        }
+        .wl-btn-cart { background:linear-gradient(135deg,var(--green-deep),var(--green-mid)); color:var(--text-primary); border:1px solid rgba(45,106,79,0.4); }
+        .wl-btn-cart:hover { box-shadow:0 4px 15px rgba(45,106,79,0.3); }
+        .wl-btn-remove { background:transparent; color:var(--text-muted); border:1px solid var(--border); }
+        .wl-btn-remove:hover { border-color:#e74c3c; color:#e74c3c; }
+
+        .empty-state { text-align:center; padding:3rem 1rem; color:var(--text-muted); }
+        .empty-state svg { width:48px; height:48px; margin-bottom:1rem; opacity:0.3; }
+        .empty-state h3 { font-family:var(--font-display); font-size:1.3rem; color:var(--text-secondary); margin-bottom:0.5rem; }
+        .empty-state p { font-size:0.85rem; margin-bottom:1.5rem; }
+        .empty-state .btn { display:inline-flex; }
+
+        @media(max-width:768px) {
+            .profile-grid { grid-template-columns:1fr; }
+            .profile-sidebar { position:static; }
+            .wishlist-grid { grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">☕</span>
+                <span class="logo-text">AFREEN TRADERS</span>
+            </a>
+            <div class="nav-actions" style="display:flex;align-items:center;gap:1rem;">
+                <a href="index.html" style="color:var(--text-secondary);font-size:0.85rem;transition:color 0.3s;">← Shop</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="profile-page">
+        <div class="container">
+            <div class="profile-grid">
+                <!-- Sidebar -->
+                <aside class="profile-sidebar">
+                    <div class="profile-avatar" id="profile-avatar">A</div>
+                    <div class="profile-name" id="profile-name">User</div>
+                    <div class="profile-email" id="profile-email">—</div>
+                    <ul class="profile-nav">
+                        <li><button class="profile-nav-btn active" data-panel="panel-overview">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            My Profile</button></li>
+                        <li><button class="profile-nav-btn" data-panel="panel-orders">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                            Order History</button></li>
+                        <li><button class="profile-nav-btn" data-panel="panel-wishlist">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                            Wishlist</button></li>
+                    </ul>
+                    <div class="profile-logout">
+                        <button class="profile-nav-btn" id="btn-logout">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                            Logout
+                        </button>
+                    </div>
+                </aside>
+
+                <!-- Content -->
+                <div class="profile-content">
+                    <!-- Panel: Overview -->
+                    <div class="profile-panel active" id="panel-overview">
+                        <h2 class="panel-title">My Profile</h2>
+                        <p class="panel-subtitle">Your account details</p>
+                        <div class="detail-card">
+                            <div class="detail-row"><span class="detail-label">Full Name</span><span class="detail-value" id="d-name">—</span></div>
+                            <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value" id="d-email">—</span></div>
+                            <div class="detail-row"><span class="detail-label">Phone</span><span class="detail-value" id="d-phone">—</span></div>
+                            <div class="detail-row"><span class="detail-label">Member Since</span><span class="detail-value" id="d-since">—</span></div>
+                            <div class="detail-row"><span class="detail-label">Customer ID</span><span class="detail-value" id="d-id">—</span></div>
+                        </div>
+                        <div class="detail-card">
+                            <div class="detail-row"><span class="detail-label">Total Orders</span><span class="detail-value" id="d-total-orders">0</span></div>
+                            <div class="detail-row"><span class="detail-label">Total Spent</span><span class="detail-value" id="d-total-spent">₹0</span></div>
+                            <div class="detail-row"><span class="detail-label">Wishlist Items</span><span class="detail-value" id="d-wishlist-count">0</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Panel: Orders -->
+                    <div class="profile-panel" id="panel-orders">
+                        <h2 class="panel-title">Order History</h2>
+                        <p class="panel-subtitle">Track your past purchases</p>
+                        <div id="orders-list"></div>
+                    </div>
+
+                    <!-- Panel: Wishlist -->
+                    <div class="profile-panel" id="panel-wishlist">
+                        <h2 class="panel-title">My Wishlist</h2>
+                        <p class="panel-subtitle">Products you've saved for later</p>
+                        <div class="wishlist-grid" id="wishlist-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="store.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const { Auth, Orders, Wishlist, Cart, PRODUCTS } = AfreenStore;
+
+        /* Auth guard */
+        if (!Auth.isLoggedIn()) { window.location.href = 'login.html'; return; }
+        const user = Auth.getUser();
+
+        /* ── Sidebar ── */
+        document.getElementById('profile-avatar').textContent = (user.name || user.email).charAt(0).toUpperCase();
+        document.getElementById('profile-name').textContent = user.name || 'User';
+        document.getElementById('profile-email').textContent = user.email;
+
+        /* ── Tab switching ── */
+        document.querySelectorAll('.profile-nav-btn[data-panel]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.profile-nav-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.profile-panel').forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.panel).classList.add('active');
+            });
+        });
+
+        /* ── Logout (Firebase + local) ── */
+        document.getElementById('btn-logout').addEventListener('click', async () => {
+            /* Firebase signOut */
+            try {
+                const { logoutUser } = await import('./firebase-auth.js');
+                await logoutUser();
+            } catch(e) {
+                /* Fallback: clear local session */
+                Auth.logout();
+            }
+            window.location.href = 'index.html';
+        });
+
+        /* ── Profile Details ── */
+        document.getElementById('d-name').textContent = user.name || '—';
+        document.getElementById('d-email').textContent = user.email;
+        document.getElementById('d-phone').textContent = user.phone || '—';
+        document.getElementById('d-since').textContent = user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' }) : '—';
+        document.getElementById('d-id').textContent = user.id;
+
+        const userOrders = Orders.getForUser(user.id);
+        const totalSpent = userOrders.reduce((s, o) => s + (o.total || 0), 0);
+        document.getElementById('d-total-orders').textContent = userOrders.length;
+        document.getElementById('d-total-spent').textContent = '₹' + totalSpent;
+        document.getElementById('d-wishlist-count').textContent = Wishlist.get().length;
+
+        /* ── Orders ── */
+        function renderOrders() {
+            const orders = Orders.getForUser(user.id);
+            const el = document.getElementById('orders-list');
+            if (orders.length === 0) {
+                el.innerHTML = `<div class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+                    <h3>No Orders Yet</h3><p>Your order history will appear here.</p>
+                    <a href="index.html" class="btn btn-primary"><span>Start Shopping</span></a></div>`;
+                return;
+            }
+            el.innerHTML = orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).map(o => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <span class="order-id">${o.id}</span>
+                        <span class="order-status ${o.status.toLowerCase()}">${o.status}</span>
+                    </div>
+                    <div class="order-items">${(o.items || []).map(i => `${i.name} (${i.weight} ×${i.qty})`).join(', ')}</div>
+                    <div class="order-meta">
+                        <span>${new Date(o.createdAt).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'})}</span>
+                        <span class="order-total">₹${o.total}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        renderOrders();
+
+        /* ── Wishlist ── */
+        function renderWishlist() {
+            const wl = Wishlist.get();
+            const el = document.getElementById('wishlist-grid');
+            if (wl.length === 0) {
+                el.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                    <h3>Wishlist Empty</h3><p>Save your favorite products here.</p>
+                    <a href="index.html" class="btn btn-primary"><span>Browse Products</span></a></div>`;
+                return;
+            }
+            el.innerHTML = wl.map(item => {
+                const product = PRODUCTS.find(p => p.id === item.id);
+                return `<div class="wishlist-card" data-id="${item.id}">
+                    <div class="wishlist-img"><img src="${item.image}" alt="${item.name}"></div>
+                    <div class="wishlist-info">
+                        <div class="wishlist-name">${item.name}</div>
+                        <div class="wishlist-actions">
+                            <button class="wl-btn wl-btn-cart" data-id="${item.id}">+ Cart</button>
+                            <button class="wl-btn wl-btn-remove" data-id="${item.id}">Remove</button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            el.querySelectorAll('.wl-btn-cart').forEach(btn => {
+                btn.addEventListener('click', () => { Cart.add(parseInt(btn.dataset.id), '250g'); btn.textContent = 'Added ✓'; setTimeout(() => { btn.textContent = '+ Cart'; }, 1200); });
+            });
+            el.querySelectorAll('.wl-btn-remove').forEach(btn => {
+                btn.addEventListener('click', () => { Wishlist.remove(parseInt(btn.dataset.id)); renderWishlist(); document.getElementById('d-wishlist-count').textContent = Wishlist.get().length; });
+            });
+        }
+        renderWishlist();
+    });
+    </script>
+</body>
+</html>

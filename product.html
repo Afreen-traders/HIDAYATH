@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product — Afreen Traders</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .product-page { padding:6rem 0 4rem; min-height:100vh; }
+        .product-detail-grid {
+            display:grid; grid-template-columns:1fr 1fr; gap:3.5rem;
+            align-items:start; animation:pageSlideIn 0.6s cubic-bezier(0.4,0,0.2,1);
+        }
+        @keyframes pageSlideIn { from{opacity:0;transform:translateX(40px)} to{opacity:1;transform:translateX(0)} }
+
+        /* Image Gallery */
+        .pd-gallery { position:sticky; top:6rem; }
+        .pd-main-image {
+            width:100%; aspect-ratio:1; border-radius:var(--radius);
+            overflow:hidden; background:var(--bg-secondary);
+            border:1px solid var(--border); margin-bottom:1rem;
+        }
+        .pd-main-image img {
+            width:100%; height:100%; object-fit:cover;
+            transition:opacity 0.3s ease, transform 0.4s ease;
+        }
+        .pd-main-image:hover img { transform:scale(1.05); }
+        .pd-thumbs { display:flex; gap:0.8rem; }
+        .pd-thumb {
+            width:80px; height:80px; border-radius:var(--radius-sm);
+            overflow:hidden; background:var(--bg-secondary);
+            border:2px solid transparent; cursor:pointer;
+            transition:all var(--transition);
+        }
+        .pd-thumb.active { border-color:var(--gold); }
+        .pd-thumb:hover { border-color:var(--border-gold); }
+        .pd-thumb img { width:100%; height:100%; object-fit:cover; }
+
+        /* Product Info */
+        .pd-info { animation:pdFadeUp 0.7s 0.1s ease both; }
+        @keyframes pdFadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        .pd-badge {
+            display:inline-block; padding:0.3rem 0.9rem;
+            background:var(--gold); color:var(--bg-primary);
+            font-size:0.65rem; font-weight:700; letter-spacing:0.1em;
+            border-radius:20px; text-transform:uppercase;
+            margin-bottom:1rem;
+        }
+        .pd-name {
+            font-family:var(--font-display); font-size:clamp(1.8rem,3.5vw,2.8rem);
+            font-weight:400; margin-bottom:0.8rem; line-height:1.2;
+        }
+        .pd-desc { color:var(--text-secondary); font-size:1rem; line-height:1.7; margin-bottom:2rem; max-width:500px; }
+        .pd-stock {
+            font-size:0.8rem; color:var(--green-light); margin-bottom:1.5rem;
+            display:flex; align-items:center; gap:0.4rem;
+        }
+        .pd-stock-dot { width:8px; height:8px; border-radius:50%; background:var(--green-light); }
+
+        /* Weight Selector */
+        .pd-weights-label {
+            font-size:0.72rem; color:var(--text-muted); text-transform:uppercase;
+            letter-spacing:0.1em; margin-bottom:0.8rem;
+        }
+        .pd-weights { display:flex; gap:0.8rem; margin-bottom:2rem; }
+        .pd-weight-btn {
+            padding:0.7rem 1.6rem; border-radius:var(--radius-sm);
+            font-size:0.85rem; font-weight:500;
+            border:1px solid var(--border); color:var(--text-secondary);
+            background:transparent; transition:all var(--transition);
+            letter-spacing:0.03em;
+        }
+        .pd-weight-btn:hover { border-color:var(--gold); color:var(--gold); }
+        .pd-weight-btn.active {
+            background:var(--gold); color:var(--bg-primary);
+            border-color:var(--gold); font-weight:600;
+        }
+
+        /* Price */
+        .pd-price {
+            font-family:var(--font-display); font-size:2.5rem; font-weight:600;
+            color:var(--gold); margin-bottom:2rem;
+        }
+        .pd-price .currency { font-size:1.5rem; vertical-align:top; }
+
+        /* Add to cart */
+        .pd-cart-row { display:flex; gap:1rem; align-items:center; margin-bottom:2.5rem; flex-wrap:wrap; }
+        .pd-qty {
+            display:flex; align-items:center; border:1px solid var(--border);
+            border-radius:var(--radius-sm); overflow:hidden;
+        }
+        .pd-qty-btn {
+            width:44px; height:44px; display:flex; align-items:center; justify-content:center;
+            font-size:1.2rem; color:var(--text-secondary); background:var(--bg-glass);
+            transition:all var(--transition);
+        }
+        .pd-qty-btn:hover { color:var(--gold); background:rgba(201,168,76,0.1); }
+        .pd-qty-val {
+            width:50px; height:44px; display:flex; align-items:center; justify-content:center;
+            font-size:1rem; font-weight:600;
+        }
+        .pd-add-btn {
+            flex:1; max-width:300px; padding:0.9rem 2rem;
+            border-radius:var(--radius-sm);
+            background:linear-gradient(135deg,var(--green-deep),var(--green-mid));
+            color:var(--text-primary); font-size:0.85rem; font-weight:600;
+            letter-spacing:0.08em; text-transform:uppercase;
+            border:1px solid rgba(45,106,79,0.4);
+            transition:all var(--transition);
+            display:flex; align-items:center; justify-content:center; gap:0.6rem;
+        }
+        .pd-add-btn:hover {
+            transform:translateY(-2px);
+            box-shadow:0 6px 20px rgba(45,106,79,0.35);
+            background:linear-gradient(135deg,var(--green-mid),var(--green-light));
+        }
+        .pd-add-btn.added { background:var(--gold); color:var(--bg-primary); border-color:var(--gold); }
+
+        /* Features */
+        .pd-features { border-top:1px solid var(--border); padding-top:2rem; }
+        .pd-features-title {
+            font-size:0.72rem; color:var(--text-muted); text-transform:uppercase;
+            letter-spacing:0.1em; margin-bottom:1rem;
+        }
+        .pd-features-list { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; }
+        .pd-feature {
+            display:flex; align-items:center; gap:0.6rem;
+            font-size:0.85rem; color:var(--text-secondary);
+        }
+        .pd-feature-icon { color:var(--gold); font-size:0.9rem; }
+
+        /* Related Products */
+        .related-section { padding:4rem 0; }
+        .related-title {
+            font-family:var(--font-display); font-size:1.6rem; font-weight:400;
+            text-align:center; margin-bottom:2rem; color:var(--text-primary);
+        }
+        .related-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1.5rem; }
+        .related-card {
+            background:var(--bg-card); border:1px solid var(--border);
+            border-radius:var(--radius); overflow:hidden; cursor:pointer;
+            transition:all var(--transition);
+        }
+        .related-card:hover { transform:translateY(-4px); border-color:var(--border-gold); box-shadow:var(--shadow-gold); }
+        .related-card-img { height:180px; overflow:hidden; background:var(--bg-secondary); }
+        .related-card-img img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s ease; }
+        .related-card:hover .related-card-img img { transform:scale(1.06); }
+        .related-card-info { padding:1.2rem; }
+        .related-card-name { font-family:var(--font-display); font-size:1.1rem; margin-bottom:0.3rem; }
+        .related-card-price { color:var(--gold); font-weight:600; }
+
+        @media(max-width:768px) {
+            .product-detail-grid { grid-template-columns:1fr; gap:2rem; }
+            .pd-gallery { position:static; }
+            .pd-features-list { grid-template-columns:1fr; }
+            .pd-cart-row { flex-direction:column; align-items:stretch; }
+            .pd-add-btn { max-width:100%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">☕</span>
+                <span class="logo-text">AFREEN TRADERS</span>
+            </a>
+            <div class="nav-actions">
+                <a href="index.html" class="back-link" style="color:var(--text-secondary);font-size:0.85rem;transition:color 0.3s;">← Back to Shop</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="product-page">
+        <div class="container">
+            <div class="product-detail-grid">
+                <!-- Image Gallery -->
+                <div class="pd-gallery" id="pd-gallery">
+                    <div class="pd-main-image">
+                        <img id="pd-main-img" src="" alt="">
+                    </div>
+                    <div class="pd-thumbs" id="pd-thumbs"></div>
+                </div>
+                <!-- Product Info -->
+                <div class="pd-info" id="pd-info">
+                    <span class="pd-badge" id="pd-badge"></span>
+                    <h1 class="pd-name" id="pd-name"></h1>
+                    <p class="pd-desc" id="pd-desc"></p>
+                    <div class="pd-stock" id="pd-stock">
+                        <span class="pd-stock-dot"></span>
+                        <span id="pd-stock-text">In Stock</span>
+                    </div>
+                    <div class="pd-weights-label">Select Weight</div>
+                    <div class="pd-weights" id="pd-weights"></div>
+                    <div class="pd-price" id="pd-price"></div>
+                    <div class="pd-cart-row">
+                        <div class="pd-qty">
+                            <button class="pd-qty-btn" id="pd-qty-minus">−</button>
+                            <span class="pd-qty-val" id="pd-qty-val">1</span>
+                            <button class="pd-qty-btn" id="pd-qty-plus">+</button>
+                        </div>
+                        <button class="pd-add-btn" id="pd-add-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                            Add to Cart
+                        </button>
+                    </div>
+                    <div class="pd-features">
+                        <div class="pd-features-title">Why Choose This</div>
+                        <div class="pd-features-list">
+                            <div class="pd-feature"><span class="pd-feature-icon">✦</span> Premium Assam Tea</div>
+                            <div class="pd-feature"><span class="pd-feature-icon">✦</span> 100% Natural</div>
+                            <div class="pd-feature"><span class="pd-feature-icon">✦</span> Fresh & Aromatic</div>
+                            <div class="pd-feature"><span class="pd-feature-icon">✦</span> Secure Packaging</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Products -->
+        <div class="related-section">
+            <div class="container">
+                <h2 class="related-title">You May Also Like</h2>
+                <div class="related-grid" id="related-grid"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="store.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const { PRODUCTS, Cart } = AfreenStore;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = parseInt(urlParams.get('id')) || 1;
+        const product = PRODUCTS.find(p => p.id === productId) || PRODUCTS[0];
+        let selectedWeight = '250g';
+        let qty = 1;
+
+        /* Extended descriptions */
+        const DESCS = {
+            1: 'Full-bodied chai dust crafted from the finest Assam leaves. Bold flavor, strong aroma, and the perfect strength for your daily cup.',
+            2: 'Hand-picked whole leaf tea with layered, complex flavors. A refined experience for those who appreciate quality.',
+            3: 'An expertly crafted spice blend with fine tea. Cardamom, cinnamon, and ginger notes create a truly special cup.',
+            4: 'Your everyday premium chai. Simple, pure, and consistently perfect. The ideal companion for every morning.',
+            5: 'Our finest reserve. Single-estate golden tips blended to perfection. The gold standard in chai for true connoisseurs.'
+        };
+
+        function render() {
+            document.title = `${product.name} — Afreen Traders`;
+            document.getElementById('pd-badge').textContent = product.badge;
+            document.getElementById('pd-name').textContent = product.name;
+            document.getElementById('pd-desc').textContent = DESCS[product.id] || product.desc;
+            updateWeight();
+            renderThumbs();
+            renderRelated();
+        }
+
+        function updateWeight() {
+            const mainImg = document.getElementById('pd-main-img');
+            mainImg.style.opacity = '0';
+            setTimeout(() => { mainImg.src = product.images[selectedWeight]; mainImg.alt = product.name; mainImg.style.opacity = '1'; }, 200);
+
+            document.getElementById('pd-price').innerHTML = `<span class="currency">₹</span>${product.prices[selectedWeight]}`;
+            const stock = product.stock[selectedWeight];
+            document.getElementById('pd-stock-text').textContent = stock > 10 ? 'In Stock' : `Only ${stock} left`;
+
+            const container = document.getElementById('pd-weights');
+            container.innerHTML = Object.keys(product.prices).map(w =>
+                `<button class="pd-weight-btn ${w === selectedWeight ? 'active' : ''}" data-weight="${w}">${w}</button>`
+            ).join('');
+            container.querySelectorAll('.pd-weight-btn').forEach(btn => {
+                btn.addEventListener('click', () => { selectedWeight = btn.dataset.weight; updateWeight(); updateThumbs(); });
+            });
+        }
+
+        function renderThumbs() {
+            const container = document.getElementById('pd-thumbs');
+            container.innerHTML = Object.entries(product.images).map(([w, src]) =>
+                `<div class="pd-thumb ${w === selectedWeight ? 'active' : ''}" data-weight="${w}"><img src="${src}" alt="${w}"></div>`
+            ).join('');
+            container.querySelectorAll('.pd-thumb').forEach(thumb => {
+                thumb.addEventListener('click', () => { selectedWeight = thumb.dataset.weight; updateWeight(); updateThumbs(); });
+            });
+        }
+        function updateThumbs() {
+            document.querySelectorAll('.pd-thumb').forEach(t => t.classList.toggle('active', t.dataset.weight === selectedWeight));
+        }
+
+        document.getElementById('pd-qty-minus').addEventListener('click', () => { if (qty > 1) { qty--; document.getElementById('pd-qty-val').textContent = qty; }});
+        document.getElementById('pd-qty-plus').addEventListener('click', () => { qty++; document.getElementById('pd-qty-val').textContent = qty; });
+
+        /* Add to cart via store */
+        document.getElementById('pd-add-btn').addEventListener('click', () => {
+            Cart.add(product.id, selectedWeight, qty);
+            const btn = document.getElementById('pd-add-btn');
+            btn.classList.add('added');
+            btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Added to Cart!';
+            setTimeout(() => {
+                btn.classList.remove('added');
+                btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> Add to Cart';
+            }, 2000);
+        });
+
+        function renderRelated() {
+            const others = PRODUCTS.filter(p => p.id !== product.id).slice(0, 4);
+            document.getElementById('related-grid').innerHTML = others.map(p => `
+                <a href="product.html?id=${p.id}" class="related-card">
+                    <div class="related-card-img"><img src="${p.images['250g']}" alt="${p.name}"></div>
+                    <div class="related-card-info">
+                        <div class="related-card-name">${p.name}</div>
+                        <div class="related-card-price">₹${p.prices['250g']}</div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        render();
+    });
+    </script>
+</body>
+</html>

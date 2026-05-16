@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — Afreen Traders</title>
+    <meta name="description" content="Sign in to your Afreen Traders account. Premium tea delivered to your doorstep.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .auth-page {
+            min-height:100vh; display:flex; align-items:center; justify-content:center;
+            padding:2rem; position:relative;
+            background:radial-gradient(ellipse at 30% 40%,rgba(26,74,58,0.2) 0%,transparent 60%),
+                        radial-gradient(ellipse at 70% 60%,rgba(201,168,76,0.06) 0%,transparent 50%),
+                        var(--bg-primary);
+        }
+        .auth-container {
+            display:flex; width:100%; max-width:960px;
+            min-height:580px; border-radius:var(--radius);
+            overflow:hidden; box-shadow:var(--shadow);
+            animation:authFadeIn 0.7s ease;
+        }
+        @keyframes authFadeIn { from{opacity:0;transform:translateY(25px)} to{opacity:1;transform:translateY(0)} }
+
+        /* Left Panel - Branding */
+        .auth-brand {
+            flex:0 0 40%; padding:3rem 2.5rem;
+            background: linear-gradient(145deg, rgba(26,74,58,0.4) 0%, rgba(10,10,10,0.9) 100%);
+            display:flex; flex-direction:column; justify-content:center;
+            position:relative; overflow:hidden;
+            border-right:1px solid var(--border);
+        }
+        .auth-brand::before {
+            content:''; position:absolute; inset:0;
+            background:radial-gradient(circle at 50% 120%,rgba(201,168,76,0.08) 0%,transparent 60%);
+        }
+        .auth-brand-content { position:relative; z-index:1; }
+        .auth-brand .logo { margin-bottom:2rem; }
+        .auth-brand-title {
+            font-family:var(--font-display); font-size:2.2rem; font-weight:300;
+            line-height:1.3; margin-bottom:1rem; color:var(--text-primary);
+        }
+        .auth-brand-desc { color:var(--text-secondary); font-size:0.95rem; line-height:1.7; margin-bottom:2.5rem; }
+        .auth-features { list-style:none; }
+        .auth-features li {
+            display:flex; align-items:center; gap:0.8rem; padding:0.5rem 0;
+            color:var(--text-secondary); font-size:0.85rem;
+        }
+        .auth-features li .feature-icon {
+            width:28px; height:28px; border-radius:50%;
+            background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.2);
+            display:flex; align-items:center; justify-content:center;
+            font-size:0.75rem; color:var(--gold); flex-shrink:0;
+        }
+
+        /* Right Panel - Form */
+        .auth-form-panel {
+            flex:1; padding:3rem 2.5rem;
+            background:var(--bg-card); backdrop-filter:blur(20px);
+            display:flex; flex-direction:column; justify-content:center;
+        }
+        .auth-tabs {
+            display:flex; gap:0; margin-bottom:2rem;
+            border:1px solid var(--border); border-radius:var(--radius-sm);
+            overflow:hidden;
+        }
+        .auth-tab {
+            flex:1; padding:0.75rem; font-size:0.8rem; font-weight:600;
+            letter-spacing:0.08em; text-transform:uppercase; text-align:center;
+            color:var(--text-secondary); transition:all var(--transition);
+        }
+        .auth-tab.active { background:var(--gold); color:var(--bg-primary); }
+        .auth-tab:hover:not(.active) { color:var(--gold); }
+
+        .auth-form { display:none; }
+        .auth-form.active { display:block; animation:formSlide 0.35s ease; }
+        @keyframes formSlide { from{opacity:0;transform:translateX(15px)} to{opacity:1;transform:translateX(0)} }
+
+        .auth-form .form-group { margin-bottom:1.2rem; }
+        .auth-form .form-group label {
+            display:block; font-size:0.72rem; color:var(--text-muted);
+            letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.4rem;
+        }
+        .auth-form .form-group input {
+            width:100%; padding:0.9rem 1.1rem; background:var(--bg-glass);
+            border:1px solid var(--border); border-radius:var(--radius-sm);
+            color:var(--text-primary); font-size:0.9rem; outline:none;
+            transition:all var(--transition);
+        }
+        .auth-form .form-group input:focus {
+            border-color:var(--gold); box-shadow:0 0 20px rgba(201,168,76,0.08);
+        }
+        .auth-form .form-group input::placeholder { color:var(--text-muted); }
+
+        .form-options {
+            display:flex; justify-content:space-between; align-items:center;
+            margin-bottom:1.5rem;
+        }
+        .remember-me {
+            display:flex; align-items:center; gap:0.5rem;
+            font-size:0.8rem; color:var(--text-secondary);
+        }
+        .remember-me input[type="checkbox"] {
+            width:16px; height:16px; accent-color:var(--gold);
+        }
+        .forgot-link {
+            font-size:0.8rem; color:var(--gold);
+            transition:opacity var(--transition);
+        }
+        .forgot-link:hover { opacity:0.7; }
+
+        .btn-auth {
+            width:100%; padding:0.95rem; border-radius:var(--radius-sm);
+            background:linear-gradient(135deg,var(--gold),var(--gold-light));
+            color:var(--bg-primary); font-size:0.85rem; font-weight:600;
+            letter-spacing:0.08em; text-transform:uppercase;
+            border:none; transition:all var(--transition);
+            margin-bottom:1.2rem;
+        }
+        .btn-auth:hover { box-shadow:0 6px 25px rgba(201,168,76,0.35); transform:translateY(-1px); }
+
+        .divider {
+            display:flex; align-items:center; gap:1rem;
+            margin-bottom:1.2rem; color:var(--text-muted); font-size:0.75rem;
+            letter-spacing:0.05em; text-transform:uppercase;
+        }
+        .divider::before, .divider::after {
+            content:''; flex:1; height:1px; background:var(--border);
+        }
+
+        .btn-google {
+            width:100%; padding:0.85rem; border-radius:var(--radius-sm);
+            background:transparent; border:1px solid var(--border);
+            color:var(--text-secondary); font-size:0.85rem; font-weight:500;
+            display:flex; align-items:center; justify-content:center; gap:0.7rem;
+            transition:all var(--transition);
+        }
+        .btn-google:hover { border-color:var(--gold); color:var(--gold); }
+        .btn-google svg { flex-shrink:0; }
+
+        .auth-footer { text-align:center; margin-top:1.5rem; }
+        .auth-footer a {
+            color:var(--gold); font-size:0.85rem;
+            transition:opacity var(--transition);
+        }
+        .auth-footer a:hover { opacity:0.7; }
+
+        /* Validation */
+        .form-group.error input { border-color:#e74c3c; }
+        .form-group .error-msg {
+            font-size:0.72rem; color:#e74c3c;
+            margin-top:0.3rem; display:none;
+        }
+        .form-group.error .error-msg { display:block; }
+
+        /* Success state */
+        .auth-success {
+            text-align:center; padding:2rem; display:none;
+            animation:authFadeIn 0.5s ease;
+        }
+        .auth-success.show { display:block; }
+        .auth-success h3 {
+            font-family:var(--font-display); font-size:1.6rem;
+            color:var(--gold); margin-bottom:0.5rem;
+        }
+        .auth-success p { color:var(--text-secondary); margin-bottom:1.5rem; }
+
+        @media(max-width:768px) {
+            .auth-container { flex-direction:column; max-width:480px; }
+            .auth-brand { display:none; }
+            .auth-form-panel { padding:2.5rem 1.5rem; }
+        }
+
+        /* Loading spinner overlay */
+        .auth-loading {
+            position:absolute; inset:0; z-index:10;
+            background:rgba(10,10,10,0.85); backdrop-filter:blur(6px);
+            display:none; align-items:center; justify-content:center;
+            flex-direction:column; gap:1rem; border-radius:var(--radius);
+        }
+        .auth-loading.show { display:flex; }
+        .auth-spinner {
+            width:40px; height:40px; border:3px solid var(--border);
+            border-top-color:var(--gold); border-radius:50%;
+            animation:authSpin 0.7s linear infinite;
+        }
+        @keyframes authSpin { to { transform:rotate(360deg); } }
+        .auth-loading-text { font-size:0.85rem; color:var(--text-muted); letter-spacing:0.05em; }
+
+        /* Toast notification */
+        .auth-toast {
+            position:fixed; top:2rem; right:2rem; z-index:9999;
+            padding:1rem 1.5rem; border-radius:var(--radius-sm);
+            font-size:0.85rem; max-width:380px;
+            transform:translateX(120%); transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);
+            box-shadow:0 8px 30px rgba(0,0,0,0.4);
+        }
+        .auth-toast.show { transform:translateX(0); }
+        .auth-toast.success { background:rgba(45,106,79,0.95); color:#e8f5e9; border:1px solid rgba(45,106,79,0.5); }
+        .auth-toast.error { background:rgba(180,40,40,0.95); color:#fce4ec; border:1px solid rgba(231,76,60,0.4); }
+        .auth-toast.info { background:rgba(201,168,76,0.95); color:var(--bg-primary); border:1px solid rgba(201,168,76,0.5); }
+
+        /* Global error banner inside form */
+        .form-error-banner {
+            background:rgba(231,76,60,0.1); border:1px solid rgba(231,76,60,0.25);
+            color:#e57373; padding:0.7rem 1rem; border-radius:var(--radius-sm);
+            font-size:0.8rem; margin-bottom:1.2rem; display:none;
+            animation:formSlide 0.3s ease;
+        }
+        .form-error-banner.show { display:block; }
+
+        /* Forgot password modal */
+        .forgot-modal {
+            position:fixed; inset:0; z-index:100;
+            background:rgba(0,0,0,0.8); backdrop-filter:blur(8px);
+            display:none; align-items:center; justify-content:center;
+            padding:2rem;
+        }
+        .forgot-modal.show { display:flex; }
+        .forgot-card {
+            width:100%; max-width:400px; padding:2.5rem;
+            background:var(--bg-card); border:1px solid var(--border);
+            border-radius:var(--radius); animation:authFadeIn 0.4s ease;
+        }
+        .forgot-card h3 {
+            font-family:var(--font-display); font-size:1.4rem;
+            color:var(--gold); margin-bottom:0.5rem;
+        }
+        .forgot-card p { color:var(--text-secondary); font-size:0.85rem; margin-bottom:1.5rem; }
+        .forgot-close {
+            position:absolute; top:1rem; right:1rem;
+            color:var(--text-muted); font-size:1.2rem; background:none; border:none; cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-page">
+        <div class="auth-container">
+            <!-- Left Branding Panel -->
+            <div class="auth-brand">
+                <div class="auth-brand-content">
+                    <a href="index.html" class="logo">
+                        <span class="logo-icon">☕</span>
+                        <span class="logo-text">AFREEN TRADERS</span>
+                    </a>
+                    <h2 class="auth-brand-title">Simple. Pure.<br><span class="gold-text">Premium.</span></h2>
+                    <p class="auth-brand-desc">Sign in to access your account, track orders, and enjoy premium tea delivered to your doorstep.</p>
+                    <ul class="auth-features">
+                        <li><span class="feature-icon">✦</span> Premium Tea Blends</li>
+                        <li><span class="feature-icon">✦</span> Fast Delivery Across India</li>
+                        <li><span class="feature-icon">✦</span> Secure UPI Payments</li>
+                        <li><span class="feature-icon">✦</span> Order Tracking via WhatsApp</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Right Form Panel -->
+            <div class="auth-form-panel">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login" id="tab-login">Sign In</button>
+                    <button class="auth-tab" data-tab="signup" id="tab-signup">Create Account</button>
+                </div>
+
+                <!-- Login Form -->
+                <form class="auth-form active" id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email Address</label>
+                        <input type="email" id="login-email" placeholder="your@email.com" required>
+                        <span class="error-msg">Please enter a valid email</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" placeholder="Enter password" required minlength="6">
+                        <span class="error-msg">Password must be at least 6 characters</span>
+                    </div>
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" id="remember-me"> Remember me
+                        </label>
+                        <a href="#" class="forgot-link">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="btn-auth" id="btn-login">Sign In</button>
+                    <div class="divider">or</div>
+                    <button type="button" class="btn-google" id="btn-google-login">
+                        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 001 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                        Continue with Google
+                    </button>
+                </form>
+
+                <!-- Signup Form -->
+                <form class="auth-form" id="signup-form">
+                    <div class="form-group">
+                        <label for="signup-name">Full Name</label>
+                        <input type="text" id="signup-name" placeholder="Your full name" required>
+                        <span class="error-msg">Name is required</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">Email Address</label>
+                        <input type="email" id="signup-email" placeholder="your@email.com" required>
+                        <span class="error-msg">Please enter a valid email</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-phone">Phone Number</label>
+                        <input type="tel" id="signup-phone" placeholder="10-digit number" required pattern="[0-9]{10}">
+                        <span class="error-msg">Enter valid 10-digit number</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <input type="password" id="signup-password" placeholder="Min 6 characters" required minlength="6">
+                        <span class="error-msg">Password must be at least 6 characters</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-confirm">Confirm Password</label>
+                        <input type="password" id="signup-confirm" placeholder="Confirm password" required>
+                        <span class="error-msg">Passwords do not match</span>
+                    </div>
+                    <button type="submit" class="btn-auth" id="btn-signup">Create Account</button>
+                    <div class="divider">or</div>
+                    <button type="button" class="btn-google" id="btn-google-signup">
+                        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 001 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                        Continue with Google
+                    </button>
+                </form>
+
+                <!-- Success State -->
+                <div class="auth-success" id="auth-success">
+                    <h3>Welcome to Afreen Traders</h3>
+                    <p>Your account is ready. Redirecting to shop...</p>
+                </div>
+
+                <div class="auth-footer">
+                    <a href="index.html">← Back to Shop</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="auth-loading" id="auth-loading">
+        <div class="auth-spinner"></div>
+        <div class="auth-loading-text">Authenticating...</div>
+    </div>
+
+    <!-- Toast -->
+    <div class="auth-toast" id="auth-toast"></div>
+
+    <!-- Forgot Password Modal -->
+    <div class="forgot-modal" id="forgot-modal">
+        <div class="forgot-card" style="position:relative;">
+            <button class="forgot-close" id="forgot-close">✕</button>
+            <h3>Reset Password</h3>
+            <p>Enter your email and we'll send a password reset link.</p>
+            <form id="forgot-form">
+                <div class="form-group" style="margin-bottom:1.2rem;">
+                    <label for="forgot-email">Email Address</label>
+                    <input type="email" id="forgot-email" placeholder="your@email.com" required
+                        style="width:100%;padding:0.9rem 1.1rem;background:var(--bg-glass);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-size:0.9rem;outline:none;">
+                </div>
+                <div class="form-error-banner" id="forgot-error"></div>
+                <button type="submit" class="btn-auth" id="btn-forgot-submit">Send Reset Link</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="store.js"></script>
+    <script type="module">
+    import {
+        loginWithEmail,
+        signupWithEmail,
+        loginWithGoogle,
+        resetPassword,
+        onAuthChange,
+        isLoggedIn
+    } from './firebase-auth.js';
+
+    /* ─── DOM Elements ─── */
+    const tabs = document.querySelectorAll('.auth-tab');
+    const forms = document.querySelectorAll('.auth-form');
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+    const successEl = document.getElementById('auth-success');
+    const loadingEl = document.getElementById('auth-loading');
+    const toastEl = document.getElementById('auth-toast');
+
+    /* ─── Redirect target ─── */
+    const params = new URLSearchParams(window.location.search);
+    const redirectTo = params.get('redirect') === 'checkout' ? 'checkout.html' : 'index.html';
+
+    /* ─── Check if already logged in via Firebase ─── */
+    onAuthChange((session) => {
+        if (session && session.loggedIn) {
+            showSuccess('Welcome back, ' + (session.name || session.email).split(' ')[0] + '!');
+            setTimeout(() => { window.location.href = redirectTo; }, 1200);
+        }
+    });
+
+    /* ─── Helpers ─── */
+    function showLoading(text = 'Authenticating...') {
+        loadingEl.querySelector('.auth-loading-text').textContent = text;
+        loadingEl.classList.add('show');
+    }
+    function hideLoading() { loadingEl.classList.remove('show'); }
+
+    function showToast(message, type = 'success') {
+        toastEl.textContent = message;
+        toastEl.className = 'auth-toast ' + type;
+        requestAnimationFrame(() => { toastEl.classList.add('show'); });
+        setTimeout(() => { toastEl.classList.remove('show'); }, 4000);
+    }
+
+    function showFormError(formEl, message) {
+        let banner = formEl.querySelector('.form-error-banner');
+        if (!banner) {
+            banner = document.createElement('div');
+            banner.className = 'form-error-banner';
+            formEl.insertBefore(banner, formEl.firstChild);
+        }
+        banner.textContent = message;
+        banner.classList.add('show');
+    }
+
+    function clearFormError(formEl) {
+        const banner = formEl.querySelector('.form-error-banner');
+        if (banner) banner.classList.remove('show');
+    }
+
+    function showSuccess(msg) {
+        successEl.querySelector('h3').textContent = msg || 'Welcome to Afreen Traders';
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'none';
+        document.querySelector('.auth-tabs').style.display = 'none';
+        successEl.classList.add('show');
+    }
+
+    function setButtonLoading(btn, loading) {
+        if (loading) {
+            btn.dataset.originalText = btn.textContent;
+            btn.textContent = 'Please wait...';
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+        } else {
+            btn.textContent = btn.dataset.originalText || 'Submit';
+            btn.disabled = false;
+            btn.style.opacity = '1';
+        }
+    }
+
+    /* ─── Tab Switching ─── */
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            forms.forEach(f => f.classList.remove('active'));
+            tab.classList.add('active');
+            const target = tab.dataset.tab === 'login' ? loginForm : signupForm;
+            target.classList.add('active');
+            clearFormError(loginForm);
+            clearFormError(signupForm);
+        });
+    });
+
+    /* ═══════════════════════════════════════════
+       EMAIL/PASSWORD LOGIN (Firebase)
+    ═══════════════════════════════════════════ */
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearFormError(loginForm);
+
+        const emailEl = document.getElementById('login-email');
+        const passEl = document.getElementById('login-password');
+
+        /* Client-side validation */
+        emailEl.parentElement.classList.toggle('error', !emailEl.validity.valid);
+        passEl.parentElement.classList.toggle('error', passEl.value.length < 6);
+        if (!emailEl.validity.valid || passEl.value.length < 6) return;
+
+        const btn = document.getElementById('btn-login');
+        setButtonLoading(btn, true);
+
+        const result = await loginWithEmail(emailEl.value, passEl.value);
+
+        if (!result.ok) {
+            setButtonLoading(btn, false);
+            showFormError(loginForm, result.error);
+            showToast(result.error, 'error');
+            return;
+        }
+
+        showSuccess('Welcome back!');
+        showToast('Signed in successfully', 'success');
+        setTimeout(() => { window.location.href = redirectTo; }, 1200);
+    });
+
+    /* ═══════════════════════════════════════════
+       EMAIL/PASSWORD SIGNUP (Firebase)
+    ═══════════════════════════════════════════ */
+    signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearFormError(signupForm);
+
+        const nameEl = document.getElementById('signup-name');
+        const emailEl = document.getElementById('signup-email');
+        const phoneEl = document.getElementById('signup-phone');
+        const passEl = document.getElementById('signup-password');
+        const confirmEl = document.getElementById('signup-confirm');
+
+        /* Client-side validation */
+        nameEl.parentElement.classList.toggle('error', !nameEl.value.trim());
+        emailEl.parentElement.classList.toggle('error', !emailEl.validity.valid);
+        phoneEl.parentElement.classList.toggle('error', !phoneEl.validity.valid);
+        passEl.parentElement.classList.toggle('error', passEl.value.length < 6);
+        confirmEl.parentElement.classList.toggle('error', confirmEl.value !== passEl.value);
+
+        if (!nameEl.value.trim() || !emailEl.validity.valid || !phoneEl.validity.valid || passEl.value.length < 6 || confirmEl.value !== passEl.value) return;
+
+        const btn = document.getElementById('btn-signup');
+        setButtonLoading(btn, true);
+
+        const result = await signupWithEmail({
+            name: nameEl.value.trim(),
+            email: emailEl.value,
+            phone: phoneEl.value,
+            password: passEl.value
+        });
+
+        if (!result.ok) {
+            setButtonLoading(btn, false);
+            showFormError(signupForm, result.error);
+            showToast(result.error, 'error');
+            return;
+        }
+
+        showSuccess('Account created!');
+        showToast('Welcome to Afreen Traders!', 'success');
+        setTimeout(() => { window.location.href = redirectTo; }, 1200);
+    });
+
+    /* ═══════════════════════════════════════════
+       GOOGLE SIGN-IN (Firebase)
+    ═══════════════════════════════════════════ */
+    document.querySelectorAll('.btn-google').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            showLoading('Connecting to Google...');
+
+            const result = await loginWithGoogle();
+            hideLoading();
+
+            if (!result.ok) {
+                showToast(result.error, 'error');
+                return;
+            }
+
+            showSuccess('Welcome, ' + (result.user.name || 'User') + '!');
+            showToast('Signed in with Google', 'success');
+            setTimeout(() => { window.location.href = redirectTo; }, 1200);
+        });
+    });
+
+    /* ═══════════════════════════════════════════
+       FORGOT PASSWORD (Firebase)
+    ═══════════════════════════════════════════ */
+    const forgotModal = document.getElementById('forgot-modal');
+    const forgotForm = document.getElementById('forgot-form');
+    const forgotError = document.getElementById('forgot-error');
+
+    /* Open modal */
+    document.querySelector('.forgot-link').addEventListener('click', (e) => {
+        e.preventDefault();
+        /* Pre-fill with login email if available */
+        const loginEmail = document.getElementById('login-email').value;
+        if (loginEmail) document.getElementById('forgot-email').value = loginEmail;
+        forgotModal.classList.add('show');
+    });
+
+    /* Close modal */
+    document.getElementById('forgot-close').addEventListener('click', () => {
+        forgotModal.classList.remove('show');
+    });
+    forgotModal.addEventListener('click', (e) => {
+        if (e.target === forgotModal) forgotModal.classList.remove('show');
+    });
+
+    /* Submit reset */
+    forgotForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const emailEl = document.getElementById('forgot-email');
+        forgotError.classList.remove('show');
+
+        if (!emailEl.validity.valid) {
+            forgotError.textContent = 'Please enter a valid email.';
+            forgotError.classList.add('show');
+            return;
+        }
+
+        const btn = document.getElementById('btn-forgot-submit');
+        setButtonLoading(btn, true);
+
+        const result = await resetPassword(emailEl.value);
+        setButtonLoading(btn, false);
+
+        if (!result.ok) {
+            forgotError.textContent = result.error;
+            forgotError.classList.add('show');
+            return;
+        }
+
+        forgotModal.classList.remove('show');
+        showToast('Password reset email sent! Check your inbox.', 'success');
+    });
+
+    /* ─── Clear field errors on input ─── */
+    document.querySelectorAll('.auth-form input').forEach(input => {
+        input.addEventListener('input', () => {
+            input.parentElement.classList.remove('error');
+            clearFormError(input.closest('.auth-form'));
+        });
+    });
+    </script>
+</body>
+</html>
