@@ -140,6 +140,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderProducts();
 
+    /* ----- PRODUCT SEARCH & FILTER (products.html) ----- */
+    const searchInput = document.getElementById('product-search');
+    const filterTags = document.getElementById('filter-tags');
+    let activeFilter = 'all';
+
+    function filterProducts() {
+        if (!productCardsContainer) return;
+        const query = (searchInput ? searchInput.value : '').toLowerCase().trim();
+        document.querySelectorAll('.product-card').forEach(card => {
+            const pid = parseInt(card.dataset.productId);
+            const product = PRODUCTS.find(p => p.id === pid);
+            if (!product) return;
+            const matchesSearch = !query || product.name.toLowerCase().includes(query) || product.desc.toLowerCase().includes(query);
+            const matchesFilter = activeFilter === 'all' || product.badge.toLowerCase() === activeFilter;
+            card.style.display = (matchesSearch && matchesFilter) ? '' : 'none';
+        });
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', filterProducts);
+    }
+    if (filterTags) {
+        filterTags.addEventListener('click', (e) => {
+            const tag = e.target.closest('.filter-tag');
+            if (!tag) return;
+            filterTags.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+            tag.classList.add('active');
+            activeFilter = tag.dataset.filter;
+            filterProducts();
+        });
+    }
+
     /* ----- CART DRAWER (reads from store) ----- */
     const cartDrawer = document.getElementById('cart-drawer');
     const cartOverlay = document.getElementById('cart-overlay');
@@ -442,7 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function syncBottomBadge() {
-        const count = Cart.getAll().reduce((s, i) => s + i.qty, 0);
+        const count = Cart.get().reduce((s, i) => s + i.qty, 0);
         if (bottomCartBadge) {
             bottomCartBadge.textContent = count;
             bottomCartBadge.classList.toggle('show', count > 0);

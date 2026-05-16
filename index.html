@@ -16,12 +16,12 @@
     <!-- Loading Screen -->
     <div id="loading-screen" class="loading-screen">
         <div class="loading-content">
-            <div class="loading-logo">AFREEN TRADERS</div>
             <div class="loading-steam">
                 <div class="steam-line"></div>
                 <div class="steam-line"></div>
                 <div class="steam-line"></div>
             </div>
+            <div class="loading-logo">AFREEN TRADERS</div>
             <p class="loading-text">Tradition in every cup...</p>
             <div class="loading-progress"><div class="loading-progress-bar"></div></div>
         </div>
@@ -30,13 +30,20 @@
     <!-- Navbar -->
     <nav class="navbar" id="navbar">
         <div class="container nav-container">
-            <a href="#" class="logo">
-                <span class="logo-icon">☕</span>
-                <span class="logo-text">AFREEN TRADERS</span>
+            <a href="index.html" class="logo">
+                <div class="logo-mark">
+                    <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+                        <path d="M20 4C12 4 6 10 6 18c0 5 2.5 9 6 12l2 2h12l2-2c3.5-3 6-7 6-12 0-8-6-14-14-14z" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+                        <path d="M14 18c0-3.3 2.7-6 6-6" stroke="#c9a84c" stroke-width="1" opacity="0.5"/>
+                        <path d="M20 32v4" stroke="#c9a84c" stroke-width="1.5"/>
+                        <path d="M16 36h8" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <span class="logo-text">AFREEN <span class="logo-accent">TRADERS</span></span>
             </a>
             <ul class="menu" id="nav-menu">
-                <li><a href="#home" class="nav-link">Home</a></li>
-                <li><a href="#products" class="nav-link">Products</a></li>
+                <li><a href="index.html" class="nav-link active">Home</a></li>
+                <li><a href="products.html" class="nav-link">Products</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
@@ -62,17 +69,33 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- ═══════════════════════════════════════════
+         HERO SECTION — Split Layout
+    ═══════════════════════════════════════════ -->
     <section id="home" class="hero">
-        <div class="hero-overlay"></div>
-        <div class="container hero-content">
-            <p class="hero-subtitle">✦ PREMIUM TEA BLENDS ✦</p>
-            <h1 class="hero-title">Simple. Pure.<br><span class="gold-text">Premium.</span></h1>
-            <p class="hero-desc">Tradition in every cup. Crafted for everyday taste.</p>
-            <a href="#products" class="btn btn-primary hero-btn">
-                <span>Shop Collection</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
+        <div class="hero-bg-text">AFREEN</div>
+        <div class="container hero-split">
+            <!-- Left: Text Content -->
+            <div class="hero-left">
+                <p class="hero-eyebrow">✦ PREMIUM TEA BLENDS ✦</p>
+                <h1 class="hero-heading">Simple. Pure.<br><span class="gold-text">Premium.</span></h1>
+                <p class="hero-tagline">Tradition in every cup. Crafted for everyday taste by Afreen Traders.</p>
+                <a href="products.html" class="btn btn-primary hero-cta">
+                    <span>Explore Collection</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+            <!-- Right: Featured Product -->
+            <div class="hero-right">
+                <div class="hero-product-glow"></div>
+                <div class="hero-product-float" id="hero-product">
+                    <img src="images/golden_250g.png" alt="Hidayath Golden Edition" class="hero-product-img">
+                </div>
+                <!-- Steam particles -->
+                <div class="hero-steam">
+                    <span></span><span></span><span></span><span></span><span></span>
+                </div>
+            </div>
         </div>
         <div class="hero-scroll-indicator">
             <span>Scroll</span>
@@ -80,70 +103,105 @@
         </div>
     </section>
 
-    <!-- Products Section -->
-    <section id="products" class="products">
+    <!-- ═══════════════════════════════════════════
+         WHY CHOOSE US
+    ═══════════════════════════════════════════ -->
+    <section class="why-section reveal" id="why">
         <div class="container">
             <div class="section-header">
-                <p class="section-subtitle">✦ OUR COLLECTION ✦</p>
-                <h2 class="section-title">Premium Tea Selection</h2>
-                <p class="section-desc">Classic tea experience. Carefully crafted for you.</p>
+                <p class="section-subtitle">✦ WHY CHOOSE US ✦</p>
+                <h2 class="section-title">The Afreen Difference</h2>
             </div>
-            <div class="product-cards" id="product-cards">
-                <!-- Product cards are rendered by JS -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Tea Mood Selector -->
-    <section class="mood-section reveal" id="mood-section">
-        <div class="container">
-            <div class="section-header">
-                <p class="section-subtitle">✦ HOW ARE YOU FEELING ✦</p>
-                <h2 class="section-title">Choose Your Mood</h2>
-                <p class="section-desc">We'll recommend the perfect tea for you.</p>
-            </div>
-            <div class="mood-grid" id="mood-grid">
-                <div class="mood-card" data-mood="relax"><span class="mood-emoji">😌</span><span class="mood-label">Relax</span></div>
-                <div class="mood-card" data-mood="energy"><span class="mood-emoji">⚡</span><span class="mood-label">Energy</span></div>
-                <div class="mood-card" data-mood="focus"><span class="mood-emoji">🧠</span><span class="mood-label">Focus</span></div>
-                <div class="mood-card" data-mood="refresh"><span class="mood-emoji">🌿</span><span class="mood-label">Refresh</span></div>
-                <div class="mood-card" data-mood="sleep"><span class="mood-emoji">🌙</span><span class="mood-label">Sleep</span></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <div class="section-header">
-                <p class="section-subtitle">✦ OUR STORY ✦</p>
-                <h2 class="section-title">About Afreen Traders</h2>
-            </div>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>Welcome to Afreen Traders. We bring you premium tea blends rooted in tradition and crafted for everyday taste.</p>
-                    <p>Simple. Pure. Premium. That's our promise in every cup.</p>
+            <div class="why-grid">
+                <div class="why-card reveal reveal-delay-1">
+                    <div class="why-icon">🍃</div>
+                    <h3>100% Natural Leaves</h3>
+                    <p>Sourced directly from premium tea estates across India. No artificial flavors, ever.</p>
                 </div>
-                <div class="about-stats">
-                    <div class="stat">
-                        <span class="stat-number">15+</span>
-                        <span class="stat-label">Years of Excellence</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-number">50K+</span>
-                        <span class="stat-label">Happy Customers</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-number">100%</span>
-                        <span class="stat-label">Premium Quality</span>
-                    </div>
+                <div class="why-card reveal reveal-delay-2">
+                    <div class="why-icon">✨</div>
+                    <h3>Handcrafted Blends</h3>
+                    <p>Each blend is carefully crafted by our master blenders with 15+ years of expertise.</p>
+                </div>
+                <div class="why-card reveal reveal-delay-3">
+                    <div class="why-icon">🚚</div>
+                    <h3>Fresh Delivery</h3>
+                    <p>Packed and shipped within 24 hours. Free delivery on orders above ₹500.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
+    <!-- ═══════════════════════════════════════════
+         BRAND STORY
+    ═══════════════════════════════════════════ -->
+    <section class="brand-story reveal" id="about">
+        <div class="container">
+            <div class="brand-story-content">
+                <div class="brand-story-label">Our Heritage</div>
+                <h2>From <span class="gold-text">Hyderabad</span> to Your Cup</h2>
+                <p>For over 15 years, Afreen Traders has been bringing the finest tea blends to homes across India. Our journey started with a simple belief — tea is not just a beverage, it's a tradition.</p>
+                <p>Every blend is sourced from premium estates, carefully processed, and packaged with love. From the bold Chai Dust to the exquisite Golden Edition, we craft experiences, not just tea.</p>
+            </div>
+            <div class="about-stats">
+                <div class="stat"><span class="stat-number">15+</span><span class="stat-label">Years of Excellence</span></div>
+                <div class="stat"><span class="stat-number">50K+</span><span class="stat-label">Happy Customers</span></div>
+                <div class="stat"><span class="stat-number">100%</span><span class="stat-label">Premium Quality</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         FEATURED BANNER
+    ═══════════════════════════════════════════ -->
+    <section class="featured-banner reveal">
+        <div class="container">
+            <div class="banner-card">
+                <div class="banner-text">
+                    <p class="banner-eyebrow">Limited Edition</p>
+                    <h2 class="banner-title">Golden Edition <span class="gold-text">Collection</span></h2>
+                    <p class="banner-desc">Our finest reserve. Handpicked from Assam's premium gardens. Only limited batches available each season.</p>
+                    <a href="products.html" class="btn btn-primary">Shop Now</a>
+                </div>
+                <div class="banner-img">
+                    <img src="images/golden_500g.png" alt="Golden Edition" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         TRUST SECTION
+    ═══════════════════════════════════════════ -->
+    <section class="trust-section reveal">
+        <div class="container">
+            <div class="trust-grid">
+                <div class="trust-item"><div class="trust-icon">🔒</div><span>Secure Payment</span></div>
+                <div class="trust-item"><div class="trust-icon">✓</div><span>Verified Seller</span></div>
+                <div class="trust-item"><div class="trust-icon">🍃</div><span>100% Organic</span></div>
+                <div class="trust-item"><div class="trust-icon">🚚</div><span>Fast Delivery</span></div>
+                <div class="trust-item"><div class="trust-icon">↩</div><span>Easy Returns</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         CTA SECTION
+    ═══════════════════════════════════════════ -->
+    <section class="cta-section reveal">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title">Ready to Experience <span class="gold-text">Premium Tea?</span></h2>
+                <p class="cta-desc">Explore our handcrafted collection. Every cup tells a story.</p>
+                <a href="products.html" class="btn btn-primary">Browse Collection</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         CONTACT
+    ═══════════════════════════════════════════ -->
+    <section id="contact" class="contact reveal">
         <div class="container">
             <div class="section-header">
                 <p class="section-subtitle">✦ GET IN TOUCH ✦</p>
@@ -151,19 +209,10 @@
             </div>
             <form class="contact-form" id="contact-form">
                 <div class="form-row">
-                    <div class="form-group">
-                        <input type="text" name="name" placeholder="Your Name" required id="contact-name">
-                        <div class="input-glow"></div>
-                    </div>
-                    <div class="form-group">
-                        <input type="email" name="email" placeholder="Your Email" required id="contact-email">
-                        <div class="input-glow"></div>
-                    </div>
+                    <div class="form-group"><input type="text" name="name" placeholder="Your Name" required id="contact-name"></div>
+                    <div class="form-group"><input type="email" name="email" placeholder="Your Email" required id="contact-email"></div>
                 </div>
-                <div class="form-group">
-                    <textarea name="message" placeholder="Your Message" required id="contact-message"></textarea>
-                    <div class="input-glow"></div>
-                </div>
+                <div class="form-group"><textarea name="message" placeholder="Your Message" required id="contact-message"></textarea></div>
                 <button type="submit" class="btn btn-primary" id="contact-submit">
                     <span>Send Message</span>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
@@ -172,42 +221,16 @@
         </div>
     </section>
 
-    <!-- Brand Story -->
-    <section class="brand-story reveal" id="brand-story">
-        <div class="container">
-            <div class="brand-story-content">
-                <div class="brand-story-label">Our Heritage</div>
-                <h2>From <span class="gold-text">Hyderabad</span> to Your Cup</h2>
-                <p>For over 15 years, Afreen Traders has been bringing the finest tea blends to homes across India. Our journey started with a simple belief — tea is not just a beverage, it's a tradition.</p>
-                <p>Every blend is sourced from premium estates, carefully processed, and packaged with love. From the bold Chai Dust to the exquisite Golden Edition, we craft experiences, not just tea.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Trust Section -->
-    <section class="trust-section reveal">
-        <div class="container">
-            <div class="trust-grid">
-                <div class="trust-item"><div class="trust-icon">🔒</div><span>Secure Payment</span></div>
-                <div class="trust-item"><div class="trust-icon">✓</div><span>Verified Seller</span></div>
-                <div class="trust-item"><div class="trust-icon">🍃</div><span>100% Natural</span></div>
-                <div class="trust-item"><div class="trust-icon">🚚</div><span>Fast Delivery</span></div>
-                <div class="trust-item"><div class="trust-icon">↩</div><span>Easy Returns</span></div>
-            </div>
-        </div>
-    </section>
-
     <!-- Footer -->
     <footer class="footer">
         <div class="container footer-content">
             <div class="footer-brand">
-                <span class="logo-icon">☕</span>
-                <span class="logo-text">AFREEN TRADERS</span>
+                <span class="logo-text" style="font-size:1.2rem">AFREEN <span class="logo-accent">TRADERS</span></span>
                 <p class="footer-tagline">Premium Tea Blends · Est. 2010</p>
             </div>
             <div class="footer-links">
-                <a href="#home">Home</a>
-                <a href="#products">Products</a>
+                <a href="index.html">Home</a>
+                <a href="products.html">Products</a>
                 <a href="#about">About</a>
                 <a href="#contact">Contact</a>
                 <a href="admin.html">Admin</a>
@@ -218,116 +241,49 @@
         </div>
     </footer>
 
-    <!-- WhatsApp Float Button -->
-    <a href="https://wa.me/919515643942?text=Hello%20Afreen%20Traders%20Team%2C%20I%20have%20a%20query." class="whatsapp-float" id="whatsapp-float" target="_blank" rel="noopener" aria-label="Contact via WhatsApp">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-        </svg>
+    <!-- WhatsApp Float -->
+    <a href="https://wa.me/919515643942?text=Hello%20Afreen%20Traders%20Team%2C%20I%20have%20a%20query." class="whatsapp-float" target="_blank" rel="noopener" aria-label="WhatsApp">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     </a>
 
-    <!-- Cart Drawer Overlay -->
+    <!-- Cart Drawer -->
     <div class="cart-overlay" id="cart-overlay"></div>
-
-    <!-- Floating Cart Drawer -->
     <aside class="cart-drawer" id="cart-drawer" aria-label="Shopping Cart">
         <div class="cart-drawer-header">
             <h2 class="cart-drawer-title">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-                    <line x1="3" y1="6" x2="21" y2="6"/>
-                    <path d="M16 10a4 4 0 01-8 0"/>
-                </svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
                 Your Cart
             </h2>
             <button class="cart-close" id="cart-close" aria-label="Close cart">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
         </div>
-
         <div class="cart-drawer-body" id="cart-drawer-body">
-            <!-- Empty cart state -->
-            <div class="cart-empty" id="cart-empty">
-                <div class="cart-empty-icon">☕</div>
-                <p>Your cart is empty</p>
-                <span>Add some premium teas to get started</span>
-            </div>
-            <!-- Cart items rendered by JS -->
+            <div class="cart-empty" id="cart-empty"><div class="cart-empty-icon">☕</div><p>Your cart is empty</p><span>Add some premium teas to get started</span></div>
             <div class="cart-items-list" id="cart-items-list"></div>
         </div>
-
         <div class="cart-drawer-footer" id="cart-drawer-footer">
-            <!-- Coupon -->
-            <div class="cart-coupon">
-                <div class="coupon-input-wrap">
-                    <input type="text" placeholder="Coupon code" id="coupon-input" class="coupon-input">
-                    <button class="coupon-apply-btn" id="coupon-apply">Apply</button>
-                </div>
-                <p class="coupon-msg" id="coupon-msg"></p>
-            </div>
-
-            <!-- Price Breakdown -->
+            <div class="cart-coupon"><div class="coupon-input-wrap"><input type="text" placeholder="Coupon code" id="coupon-input" class="coupon-input"><button class="coupon-apply-btn" id="coupon-apply">Apply</button></div><p class="coupon-msg" id="coupon-msg"></p></div>
             <div class="cart-summary">
-                <div class="summary-row">
-                    <span>Subtotal</span>
-                    <span id="cart-subtotal">₹0</span>
-                </div>
-                <div class="summary-row" id="discount-row" style="display:none;">
-                    <span>Discount</span>
-                    <span class="discount-value" id="cart-discount">-₹0</span>
-                </div>
-                <div class="summary-row">
-                    <span>Delivery</span>
-                    <span id="cart-delivery">₹0</span>
-                </div>
-                <div class="summary-row summary-total">
-                    <span>Total</span>
-                    <span id="cart-total">₹0</span>
-                </div>
+                <div class="summary-row"><span>Subtotal</span><span id="cart-subtotal">₹0</span></div>
+                <div class="summary-row" id="discount-row" style="display:none;"><span>Discount</span><span class="discount-value" id="cart-discount">-₹0</span></div>
+                <div class="summary-row"><span>Delivery</span><span id="cart-delivery">₹0</span></div>
+                <div class="summary-row summary-total"><span>Total</span><span id="cart-total">₹0</span></div>
             </div>
-
-            <!-- Checkout Button -->
-            <a href="checkout.html" class="btn btn-checkout" id="checkout-btn">
-                <span>Proceed to Checkout</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
+            <a href="checkout.html" class="btn btn-checkout" id="checkout-btn"><span>Proceed to Checkout</span></a>
         </div>
     </aside>
 
-    <!-- Live Sales Popup -->
-    <div class="live-sale-popup" id="live-sale-popup">
-        <div class="live-sale-avatar" id="live-sale-avatar">R</div>
-        <div class="live-sale-text">
-            <strong id="live-sale-name">Rahul</strong> from <strong id="live-sale-city">Hyderabad</strong> just purchased<br>
-            <span class="live-sale-product" id="live-sale-product">Premium Assam Chai</span>
-            <span class="live-sale-time" id="live-sale-time">2 minutes ago</span>
-        </div>
-        <button class="live-sale-close" id="live-sale-close">✕</button>
-    </div>
-
-    <!-- Mobile Sticky Bottom Nav -->
+    <!-- Mobile Bottom Nav -->
     <nav class="bottom-nav" id="bottom-nav">
         <div class="bottom-nav-items">
-            <a href="#home" class="bottom-nav-item active">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-                <span>Home</span>
-            </a>
-            <a href="#products" class="bottom-nav-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
-                <span>Shop</span>
-            </a>
-            <button class="bottom-nav-item" id="bottom-cart-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-                <span class="bottom-nav-badge" id="bottom-cart-badge">0</span>
-                <span>Cart</span>
-            </button>
-            <a href="profile.html" class="bottom-nav-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                <span>Profile</span>
-            </a>
+            <a href="index.html" class="bottom-nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg><span>Home</span></a>
+            <a href="products.html" class="bottom-nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg><span>Shop</span></a>
+            <button class="bottom-nav-item" id="bottom-cart-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg><span class="bottom-nav-badge" id="bottom-cart-badge">0</span><span>Cart</span></button>
+            <a href="profile.html" class="bottom-nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></a>
         </div>
     </nav>
 
-    <!-- Custom Cursor -->
     <div class="custom-cursor" id="custom-cursor"></div>
     <div class="custom-cursor-dot" id="custom-cursor-dot"></div>
 
