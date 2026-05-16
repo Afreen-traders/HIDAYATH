@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="tea-assistant.css">
 </head>
 <body>
 
@@ -16,8 +17,13 @@
     <div id="loading-screen" class="loading-screen">
         <div class="loading-content">
             <div class="loading-logo">AFREEN TRADERS</div>
-            <div class="loading-spinner"></div>
+            <div class="loading-steam">
+                <div class="steam-line"></div>
+                <div class="steam-line"></div>
+                <div class="steam-line"></div>
+            </div>
             <p class="loading-text">Tradition in every cup...</p>
+            <div class="loading-progress"><div class="loading-progress-bar"></div></div>
         </div>
     </div>
 
@@ -35,6 +41,9 @@
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
             <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="theme-icon"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                </button>
                 <div id="nav-auth"></div>
                 <button class="cart-toggle" id="cart-toggle" aria-label="Open cart">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -81,6 +90,24 @@
             </div>
             <div class="product-cards" id="product-cards">
                 <!-- Product cards are rendered by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Tea Mood Selector -->
+    <section class="mood-section reveal" id="mood-section">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-subtitle">✦ HOW ARE YOU FEELING ✦</p>
+                <h2 class="section-title">Choose Your Mood</h2>
+                <p class="section-desc">We'll recommend the perfect tea for you.</p>
+            </div>
+            <div class="mood-grid" id="mood-grid">
+                <div class="mood-card" data-mood="relax"><span class="mood-emoji">😌</span><span class="mood-label">Relax</span></div>
+                <div class="mood-card" data-mood="energy"><span class="mood-emoji">⚡</span><span class="mood-label">Energy</span></div>
+                <div class="mood-card" data-mood="focus"><span class="mood-emoji">🧠</span><span class="mood-label">Focus</span></div>
+                <div class="mood-card" data-mood="refresh"><span class="mood-emoji">🌿</span><span class="mood-label">Refresh</span></div>
+                <div class="mood-card" data-mood="sleep"><span class="mood-emoji">🌙</span><span class="mood-label">Sleep</span></div>
             </div>
         </div>
     </section>
@@ -142,6 +169,31 @@
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
                 </button>
             </form>
+        </div>
+    </section>
+
+    <!-- Brand Story -->
+    <section class="brand-story reveal" id="brand-story">
+        <div class="container">
+            <div class="brand-story-content">
+                <div class="brand-story-label">Our Heritage</div>
+                <h2>From <span class="gold-text">Hyderabad</span> to Your Cup</h2>
+                <p>For over 15 years, Afreen Traders has been bringing the finest tea blends to homes across India. Our journey started with a simple belief — tea is not just a beverage, it's a tradition.</p>
+                <p>Every blend is sourced from premium estates, carefully processed, and packaged with love. From the bold Chai Dust to the exquisite Golden Edition, we craft experiences, not just tea.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Section -->
+    <section class="trust-section reveal">
+        <div class="container">
+            <div class="trust-grid">
+                <div class="trust-item"><div class="trust-icon">🔒</div><span>Secure Payment</span></div>
+                <div class="trust-item"><div class="trust-icon">✓</div><span>Verified Seller</span></div>
+                <div class="trust-item"><div class="trust-icon">🍃</div><span>100% Natural</span></div>
+                <div class="trust-item"><div class="trust-icon">🚚</div><span>Fast Delivery</span></div>
+                <div class="trust-item"><div class="trust-icon">↩</div><span>Easy Returns</span></div>
+            </div>
         </div>
     </section>
 
@@ -241,7 +293,46 @@
         </div>
     </aside>
 
+    <!-- Live Sales Popup -->
+    <div class="live-sale-popup" id="live-sale-popup">
+        <div class="live-sale-avatar" id="live-sale-avatar">R</div>
+        <div class="live-sale-text">
+            <strong id="live-sale-name">Rahul</strong> from <strong id="live-sale-city">Hyderabad</strong> just purchased<br>
+            <span class="live-sale-product" id="live-sale-product">Premium Assam Chai</span>
+            <span class="live-sale-time" id="live-sale-time">2 minutes ago</span>
+        </div>
+        <button class="live-sale-close" id="live-sale-close">✕</button>
+    </div>
+
+    <!-- Mobile Sticky Bottom Nav -->
+    <nav class="bottom-nav" id="bottom-nav">
+        <div class="bottom-nav-items">
+            <a href="#home" class="bottom-nav-item active">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+                <span>Home</span>
+            </a>
+            <a href="#products" class="bottom-nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+                <span>Shop</span>
+            </a>
+            <button class="bottom-nav-item" id="bottom-cart-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                <span class="bottom-nav-badge" id="bottom-cart-badge">0</span>
+                <span>Cart</span>
+            </button>
+            <a href="profile.html" class="bottom-nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span>Profile</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="custom-cursor"></div>
+    <div class="custom-cursor-dot" id="custom-cursor-dot"></div>
+
     <script src="store.js"></script>
     <script src="script.js"></script>
+    <script src="tea-assistant.js"></script>
 </body>
 </html>

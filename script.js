@@ -282,6 +282,178 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    /* ----- THEME TOGGLE (Dark/Light) ----- */
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const savedTheme = localStorage.getItem('afreen_theme') || 'dark';
+    if (savedTheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+
+    function updateThemeIcon() {
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        if (themeIcon) {
+            themeIcon.innerHTML = isLight
+                ? '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>'
+                : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+        }
+    }
+    updateThemeIcon();
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            document.documentElement.setAttribute('data-theme', isLight ? '' : 'light');
+            localStorage.setItem('afreen_theme', isLight ? 'dark' : 'light');
+            updateThemeIcon();
+        });
+    }
+
+    /* ----- SCROLL REVEAL (IntersectionObserver) ----- */
+    const revealElements = document.querySelectorAll('.reveal');
+    if (revealElements.length) {
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+        revealElements.forEach(el => revealObserver.observe(el));
+    }
+
+    /* ----- TEA MOOD SELECTOR ----- */
+    const moodMap = {
+        relax: [3, 5],    /* Chai Special, Golden Edition */
+        energy: [1, 2],   /* Chai Dust, Chai Leaves */
+        focus: [1, 4],     /* Chai Dust, Home Chai */
+        refresh: [2, 5],  /* Chai Leaves, Golden Edition */
+        sleep: [3, 4]     /* Chai Special, Home Chai */
+    };
+
+    const moodGrid = document.getElementById('mood-grid');
+    if (moodGrid) {
+        moodGrid.addEventListener('click', (e) => {
+            const card = e.target.closest('.mood-card');
+            if (!card) return;
+            const mood = card.dataset.mood;
+
+            /* Toggle active mood */
+            const wasActive = card.classList.contains('active');
+            document.querySelectorAll('.mood-card').forEach(c => c.classList.remove('active'));
+
+            if (wasActive) {
+                /* Show all products */
+                document.querySelectorAll('.product-card').forEach(c => { c.style.display = ''; });
+                return;
+            }
+
+            card.classList.add('active');
+            const ids = moodMap[mood] || [];
+
+            /* Filter products */
+            document.querySelectorAll('.product-card').forEach(c => {
+                const pid = parseInt(c.dataset.productId);
+                c.style.display = ids.includes(pid) ? '' : 'none';
+            });
+
+            /* Smooth scroll to products */
+            const productsSection = document.getElementById('products');
+            if (productsSection) {
+                productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    }
+
+    /* ----- LIVE SALES POPUP ----- */
+    const salesData = {
+        names: ['Rahul', 'Priya', 'Arjun', 'Sneha', 'Vikram', 'Anjali', 'Karthik', 'Meera', 'Aisha', 'Ravi', 'Fatima', 'Suresh', 'Nisha', 'Imran', 'Deepa'],
+        cities: ['Hyderabad', 'Mumbai', 'Bangalore', 'Chennai', 'Delhi', 'Pune', 'Kolkata', 'Jaipur', 'Ahmedabad', 'Lucknow', 'Vizag', 'Kochi'],
+        products: ['Hidayath Chai Dust', 'Premium Chai Leaves', 'Chai Special Blend', 'Home Chai Classic', 'Golden Edition']
+    };
+
+    function showLiveSale() {
+        const popup = document.getElementById('live-sale-popup');
+        if (!popup) return;
+
+        const name = salesData.names[Math.floor(Math.random() * salesData.names.length)];
+        const city = salesData.cities[Math.floor(Math.random() * salesData.cities.length)];
+        const product = salesData.products[Math.floor(Math.random() * salesData.products.length)];
+        const mins = Math.floor(Math.random() * 12) + 1;
+
+        document.getElementById('live-sale-avatar').textContent = name.charAt(0);
+        document.getElementById('live-sale-name').textContent = name;
+        document.getElementById('live-sale-city').textContent = city;
+        document.getElementById('live-sale-product').textContent = product;
+        document.getElementById('live-sale-time').textContent = `${mins} minute${mins > 1 ? 's' : ''} ago`;
+
+        popup.classList.add('show');
+        setTimeout(() => { popup.classList.remove('show'); }, 5000);
+    }
+
+    /* Show first popup after 8s, then every 25-45s */
+    setTimeout(showLiveSale, 8000);
+    setInterval(showLiveSale, (25 + Math.random() * 20) * 1000);
+
+    const liveSaleClose = document.getElementById('live-sale-close');
+    if (liveSaleClose) {
+        liveSaleClose.addEventListener('click', () => {
+            document.getElementById('live-sale-popup').classList.remove('show');
+        });
+    }
+
+    /* ----- CUSTOM CURSOR (Desktop only) ----- */
+    const cursor = document.getElementById('custom-cursor');
+    const cursorDot = document.getElementById('custom-cursor-dot');
+    if (cursor && cursorDot && window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
+        let cx = 0, cy = 0, dx = 0, dy = 0;
+        document.addEventListener('mousemove', (e) => {
+            dx = e.clientX; dy = e.clientY;
+            cursorDot.style.left = dx + 'px';
+            cursorDot.style.top = dy + 'px';
+        });
+        function animCursor() {
+            cx += (dx - cx) * 0.15;
+            cy += (dy - cy) * 0.15;
+            cursor.style.left = cx + 'px';
+            cursor.style.top = cy + 'px';
+            requestAnimationFrame(animCursor);
+        }
+        animCursor();
+
+        document.querySelectorAll('a, button, .product-card, .mood-card, .weight-btn, .btn').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        /* Hide default cursor */
+        document.body.style.cursor = 'none';
+        document.querySelectorAll('a, button').forEach(el => { el.style.cursor = 'none'; });
+    }
+
+    /* ----- BOTTOM NAV: Cart Badge Sync ----- */
+    const bottomCartBadge = document.getElementById('bottom-cart-badge');
+    const bottomCartBtn = document.getElementById('bottom-cart-btn');
+    if (bottomCartBtn) {
+        bottomCartBtn.addEventListener('click', () => {
+            document.getElementById('cart-overlay').classList.add('open');
+            document.getElementById('cart-drawer').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        });
+    }
+
+    function syncBottomBadge() {
+        const count = Cart.getAll().reduce((s, i) => s + i.qty, 0);
+        if (bottomCartBadge) {
+            bottomCartBadge.textContent = count;
+            bottomCartBadge.classList.toggle('show', count > 0);
+        }
+    }
+
     /* ----- INIT ----- */
     syncCartFromStore();
+    syncBottomBadge();
+
+    /* Override syncCartFromStore to also update bottom badge */
+    const origSync = syncCartFromStore;
+    syncCartFromStore = function() { origSync(); syncBottomBadge(); };
 });
