@@ -7,6 +7,8 @@ import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     signInWithPopup,
+    signInWithRedirect,
+    getRedirectResult,
     GoogleAuthProvider,
     sendPasswordResetEmail,
     updateProfile,
@@ -31,9 +33,18 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
+googleProvider.addScope('email');
+googleProvider.addScope('profile');
 
 /* Set persistence to LOCAL (survives browser restart) */
 setPersistence(auth, browserLocalPersistence).catch(() => {});
+
+/* ─── Handle redirect result (for Google sign-in redirect flow) ─── */
+getRedirectResult(auth).then((result) => {
+    if (result && result.user) {
+        syncUserToLocal(result.user);
+    }
+}).catch(() => {});
 
 /* ═══════════════════════════════════════════
    HELPER: Map Firebase error codes → friendly messages
@@ -51,7 +62,10 @@ function friendlyError(code) {
         'auth/network-request-failed': 'Network error. Check your connection.',
         'auth/popup-blocked': 'Popup blocked by browser. Allow popups and try again.',
         'auth/cancelled-popup-request': 'Sign-in cancelled.',
-        'auth/account-exists-with-different-credential': 'An account already exists with this email using a different sign-in method.'
+        'auth/account-exists-with-different-credential': 'An account already exists with this email using a different sign-in method.',
+        'auth/unauthorized-domain': 'This domain is not authorized for sign-in. Please contact support.',
+        'auth/operation-not-allowed': 'Google sign-in is not enabled. Please contact support.',
+        'auth/internal-error': 'Authentication service error. Please try again.'
     };
     return map[code] || 'Something went wrong. Please try again.';
 }
@@ -90,6 +104,7 @@ async function loginWithEmail(email, password) {
         const session = syncUserToLocal(cred.user);
         return { ok: true, user: session };
     } catch (err) {
+        console.warn('[Afreen Auth] Login error:', err.code, err.message);
         return { ok: false, error: friendlyError(err.code) };
     }
 }
@@ -98,24 +113,41 @@ async function loginWithEmail(email, password) {
 async function signupWithEmail({ name, email, phone, password }) {
     try {
         const cred = await createUserWithEmailAndPassword(auth, email, password);
-        /* Set display name */
         await updateProfile(cred.user, { displayName: name });
         const session = syncUserToLocal(cred.user);
-        /* Store phone in localStorage profile (Firebase Auth doesn't store arbitrary phone without phone auth) */
         if (phone) { session.phone = phone; localStorage.setItem('afreen_user', JSON.stringify(session)); }
         return { ok: true, user: session };
     } catch (err) {
+        console.warn('[Afreen Auth] Signup error:', err.code, err.message);
         return { ok: false, error: friendlyError(err.code) };
     }
 }
 
-/** Google Sign-In */
+/** Google Sign-In — tries popup first, falls back to redirect */
 async function loginWithGoogle() {
     try {
         const result = await signInWithPopup(auth, googleProvider);
         const session = syncUserToLocal(result.user);
         return { ok: true, user: session };
     } catch (err) {
+        console.warn('[Afreen Auth] Google popup error:', err.code, err.message);
+
+        /* User-initiated closures — just show friendly message */
+        if (['auth/popup-closed-by-user', 'auth/cancelled-popup-request'].includes(err.code)) {
+            return { ok: false, error: friendlyError(err.code) };
+        }
+
+        /* Popup blocked or unauthorized domain — try redirect */
+        if (['auth/popup-blocked', 'auth/unauthorized-domain'].includes(err.code)) {
+            try {
+                await signInWithRedirect(auth, googleProvider);
+                return { ok: true, user: null };
+            } catch (redirectErr) {
+                console.warn('[Afreen Auth] Redirect fallback error:', redirectErr.code);
+                return { ok: false, error: friendlyError(err.code) };
+            }
+        }
+
         return { ok: false, error: friendlyError(err.code) };
     }
 }
@@ -126,6 +158,7 @@ async function resetPassword(email) {
         await sendPasswordResetEmail(auth, email);
         return { ok: true };
     } catch (err) {
+        console.warn('[Afreen Auth] Reset error:', err.code);
         return { ok: false, error: friendlyError(err.code) };
     }
 }
