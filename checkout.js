@@ -107,6 +107,37 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    /* ── Shiprocket Serviceability ── */
+    const pincodeEl = document.getElementById('pincode');
+    const estimateEl = document.getElementById('shipping-estimate');
+    if (pincodeEl) {
+        pincodeEl.addEventListener('blur', async () => {
+            const pin = pincodeEl.value.trim();
+            if (pin.length === 6) {
+                estimateEl.style.display = 'block';
+                estimateEl.textContent = 'Checking shipping availability...';
+                try {
+                    const { checkServiceability } = await import('./src/services/shiprocket.js');
+                    // Assume pickup pincode is 110001 for demo, weight 0.5kg
+                    const res = await checkServiceability(110001, pin, 0.5, 0);
+                    if (res && res.data && res.data.available_courier_companies && res.data.available_courier_companies.length > 0) {
+                        const courier = res.data.available_courier_companies[0];
+                        estimateEl.textContent = `Estimated Delivery: ${courier.etd} (by ${courier.courier_name})`;
+                    } else {
+                        estimateEl.textContent = 'Shipping might not be available to this pincode.';
+                        estimateEl.style.color = '#e74c3c';
+                    }
+                } catch(e) {
+                    console.error("Serviceability error:", e);
+                    estimateEl.textContent = 'Standard delivery available (5-7 business days).';
+                    estimateEl.style.color = 'var(--text-muted)';
+                }
+            } else {
+                estimateEl.style.display = 'none';
+            }
+        });
+    }
+
     /* Pre-fill from saved delivery or user profile */
     const savedDel = Delivery.get();
     const user = Auth.getUser();
@@ -195,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
        CONFIRM PAYMENT
     ═══════════════════════════════════════════ */
     if (paidBtn) {
-        paidBtn.addEventListener('click', () => {
+        paidBtn.addEventListener('click', async () => {
             paidBtn.disabled = true;
             paidBtn.innerHTML = '<span>Processing...</span>';
 
@@ -205,9 +236,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const delivery = Delivery.get() || {};
             const cart = Cart.get();
-            const total = Cart.getTotal();
+            const total = finalTotalToPay;
 
             const order = Orders.create({ cart, delivery, total, screenshot: screenshotData });
+
+            /* Apply Rewards */
+            if (window.AfreenRewards) {
+                const { Wallet, SpecialCoupon } = window.AfreenRewards;
+                if (appliedCoins > 0) {
+                    await Wallet.redeemCoins(appliedCoins, `Order #${order.id}`);
+                }
+                if (appliedCouponDiscount > 0) {
+                    await SpecialCoupon.markUsed(order.id);
+                }
+            }
 
             /* Clear cart */
             Cart.clear();
@@ -225,8 +267,84 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ═══════════════════════════════════════════
-       ORDER SUMMARY PANEL
+       ORDER SUMMARY & REWARDS
     ═══════════════════════════════════════════ */
+    let appliedCouponDiscount = 0;
+    let appliedCoins = 0;
+    let finalTotalToPay = 0;
+
+    async function initRewards() {
+        const { Auth } = AfreenStore;
+        const user = Auth.getUser();
+        if (!user || !window.AfreenRewards) return;
+        
+        const { Wallet } = window.AfreenRewards;
+        const balance = await Wallet.getBalance();
+        
+        const coinBlock = document.getElementById('coin-redeem-block');
+        const balanceEl = document.getElementById('checkout-coin-balance');
+        if (coinBlock && balance > 0) {
+            coinBlock.style.display = 'block';
+            if (balanceEl) balanceEl.textContent = balance;
+        }
+
+        /* Coupon listener */
+        document.getElementById('apply-coupon-btn')?.addEventListener('click', async () => {
+            const codeInput = document.getElementById('coupon-code');
+            const msgEl = document.getElementById('coupon-message');
+            if (!codeInput || !msgEl) return;
+            const code = codeInput.value.trim().toUpperCase();
+            
+            if (code === window.AfreenRewards.SpecialCoupon.CODE) {
+                const res = await window.AfreenRewards.SpecialCoupon.validate(Cart.get());
+                if (res.ok) {
+                    appliedCouponDiscount = res.discount;
+                    msgEl.textContent = res.message;
+                    msgEl.className = 'coupon-msg success';
+                } else {
+                    appliedCouponDiscount = 0;
+                    msgEl.textContent = res.error;
+                    msgEl.className = 'coupon-msg error';
+                }
+            } else {
+                appliedCouponDiscount = 0;
+                msgEl.textContent = 'Invalid coupon code';
+                msgEl.className = 'coupon-msg error';
+            }
+            renderSummary();
+        });
+
+        /* Coin listener */
+        document.getElementById('apply-coin-btn')?.addEventListener('click', () => {
+            const input = document.getElementById('coin-input');
+            const msgEl = document.getElementById('coin-message');
+            if (!input || !msgEl) return;
+            const toRedeem = parseInt(input.value) || 0;
+            
+            if (toRedeem > balance) {
+                msgEl.textContent = "You don't have enough coins.";
+                msgEl.className = 'coupon-msg error';
+                appliedCoins = 0;
+            } else if (toRedeem > 0) {
+                /* Can't redeem more coins than the subtotal */
+                const maxRedeem = Cart.getSubtotal() - appliedCouponDiscount;
+                if (toRedeem > maxRedeem) {
+                    msgEl.textContent = `You can only redeem up to ${maxRedeem} coins for this order.`;
+                    msgEl.className = 'coupon-msg error';
+                    appliedCoins = 0;
+                } else {
+                    appliedCoins = toRedeem;
+                    msgEl.textContent = `${appliedCoins} coins applied! (-₹${appliedCoins})`;
+                    msgEl.className = 'coupon-msg success';
+                }
+            } else {
+                appliedCoins = 0;
+                msgEl.textContent = '';
+            }
+            renderSummary();
+        });
+    }
+
     function renderSummary() {
         const items = document.getElementById('summary-items');
         const cart = Cart.get();
@@ -245,25 +363,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const subEl = document.getElementById('sum-subtotal');
         const delEl = document.getElementById('sum-delivery');
-        const discRow = document.getElementById('sum-discount-row');
-        const discEl = document.getElementById('sum-discount');
+        
+        const couponRow = document.getElementById('sum-coupon-row');
+        const couponEl = document.getElementById('sum-coupon');
+        const coinRow = document.getElementById('sum-coin-row');
+        const coinEl = document.getElementById('sum-coins');
+        
         const totalEl = document.getElementById('sum-total');
         const stickyEl = document.getElementById('sticky-total');
 
-        if (subEl) subEl.textContent = `₹${Cart.getSubtotal()}`;
-        if (delEl) {
-            const d = Cart.getDelivery();
-            delEl.textContent = d === 0 ? 'FREE' : `₹${d}`;
+        const subtotal = Cart.getSubtotal();
+        if (subEl) subEl.textContent = `₹${subtotal}`;
+        
+        const delivery = Cart.getDelivery();
+        if (delEl) delEl.textContent = delivery === 0 ? 'FREE' : `₹${delivery}`;
+        
+        if (couponRow && couponEl) {
+            if (appliedCouponDiscount > 0) { couponRow.style.display = 'flex'; couponEl.textContent = `-₹${appliedCouponDiscount}`; }
+            else { couponRow.style.display = 'none'; }
         }
-        if (discRow && discEl) {
-            const disc = Cart.getDiscount();
-            if (disc > 0) { discRow.style.display = 'flex'; discEl.textContent = `-₹${disc}`; }
-            else { discRow.style.display = 'none'; }
+        
+        if (coinRow && coinEl) {
+            if (appliedCoins > 0) { coinRow.style.display = 'flex'; coinEl.textContent = `-₹${appliedCoins}`; }
+            else { coinRow.style.display = 'none'; }
         }
-        const total = Cart.getTotal();
-        if (totalEl) totalEl.textContent = `₹${total}`;
-        if (stickyEl) stickyEl.textContent = `₹${total}`;
+
+        finalTotalToPay = subtotal + delivery - appliedCouponDiscount - appliedCoins;
+        
+        if (totalEl) totalEl.textContent = `₹${finalTotalToPay}`;
+        if (stickyEl) stickyEl.textContent = `₹${finalTotalToPay}`;
+        
+        /* Update UPI amount if on step 3 */
+        const upiEl = document.getElementById('upi-amount');
+        if (upiEl) upiEl.textContent = `₹${finalTotalToPay}`;
     }
 
-    renderSummary();
+    /* Wait a tick for window.AfreenRewards to be available if it's async */
+    setTimeout(() => {
+        initRewards();
+        renderSummary();
+    }, 100);
 });

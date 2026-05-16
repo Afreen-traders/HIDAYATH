@@ -145,6 +145,7 @@
                                 <div class="form-group">
                                     <label for="pincode">Pincode *</label>
                                     <input type="text" id="pincode" placeholder="6-digit PIN" required pattern="[0-9]{6}">
+                                    <div id="shipping-estimate" style="margin-top:0.5rem;font-size:0.8rem;color:var(--gold);display:none;"></div>
                                 </div>
                             </div>
                             <div class="payment-actions">
@@ -244,9 +245,33 @@
                     <div class="summary-card">
                         <h3 class="summary-card-title">Order Summary</h3>
                         <div class="summary-items" id="summary-items"></div>
+                        
+                        <!-- Rewards Section -->
+                        <div class="checkout-rewards-wrap">
+                            <div class="coupon-section">
+                                <div class="coupon-input-group">
+                                    <input type="text" id="coupon-code" placeholder="Gift card or discount code" class="coupon-input">
+                                    <button class="coupon-apply-btn" id="apply-coupon-btn">Apply</button>
+                                </div>
+                                <div id="coupon-message" class="coupon-msg"></div>
+                            </div>
+                            <div class="coin-redeem-section" id="coin-redeem-block" style="display:none;">
+                                <div class="coin-redeem-header">
+                                    <span class="coin-redeem-label"><span class="gold-text">🪙</span> Afreen Coins</span>
+                                    <span class="coin-redeem-balance">Balance: <span id="checkout-coin-balance">0</span></span>
+                                </div>
+                                <div class="coin-redeem-row">
+                                    <input type="number" id="coin-input" class="coin-input" placeholder="Coins to use" min="1">
+                                    <button class="coin-apply-btn" id="apply-coin-btn">Use Coins</button>
+                                </div>
+                                <div id="coin-message" class="coupon-msg"></div>
+                            </div>
+                        </div>
+
                         <div class="summary-breakdown">
                             <div class="summary-row"><span>Subtotal</span><span id="sum-subtotal">₹0</span></div>
-                            <div class="summary-row" id="sum-discount-row" style="display:none;"><span>Discount</span><span class="discount-value" id="sum-discount">-₹0</span></div>
+                            <div class="summary-row" id="sum-coupon-row" style="display:none;"><span>Coupon Discount</span><span class="discount-value" id="sum-coupon">-₹0</span></div>
+                            <div class="summary-row" id="sum-coin-row" style="display:none;"><span>Coins Redeemed</span><span class="discount-value" id="sum-coins">-₹0</span></div>
                             <div class="summary-row"><span>Delivery</span><span id="sum-delivery">₹0</span></div>
                             <div class="summary-row summary-total"><span>Total</span><span id="sum-total">₹0</span></div>
                         </div>
@@ -272,6 +297,7 @@
     </footer>
 
     <script src="store.js"></script>
+    <script src="rewards.js"></script>
     <script src="checkout.js"></script>
 </body>
 </html>

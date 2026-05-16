@@ -385,9 +385,15 @@
     const loadingEl = document.getElementById('auth-loading');
     const toastEl = document.getElementById('auth-toast');
 
-    /* ─── Redirect target ─── */
+    /* ─── Query Params ─── */
     const params = new URLSearchParams(window.location.search);
     const redirectTo = params.get('redirect') === 'checkout' ? 'checkout.html' : 'index.html';
+    
+    /* ─── Save Referral Code ─── */
+    const refCode = params.get('ref');
+    if (refCode) {
+        sessionStorage.setItem('pending_referral_code', refCode);
+    }
 
     /* ─── Check if already logged in via Firebase ─── */
     onAuthChange((session) => {

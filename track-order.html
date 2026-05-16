@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order — Afreen Traders</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .track-hero {
+            padding: 8rem 0 4rem;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(45,106,79,0.15) 0%, transparent 70%);
+        }
+        .track-form {
+            max-width: 500px;
+            margin: 0 auto 3rem;
+            display: flex;
+            gap: 1rem;
+        }
+        .track-input {
+            flex: 1;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all var(--transition);
+        }
+        .track-input:focus {
+            outline: none;
+            border-color: var(--green-mid);
+            background: rgba(45,106,79,0.05);
+        }
+        
+        .tracking-result {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            display: none;
+        }
+        
+        .shipment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .shipment-header h3 { font-family: var(--font-display); font-size: 1.5rem; color: var(--gold); }
+        .shipment-meta { font-size: 0.9rem; color: var(--text-muted); }
+        
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: rgba(45,106,79,0.3);
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        .timeline-item:last-child { margin-bottom: 0; }
+        .timeline-dot {
+            position: absolute;
+            left: -2.35rem;
+            top: 0;
+            width: 1.2rem;
+            height: 1.2rem;
+            border-radius: 50%;
+            background: var(--bg-color);
+            border: 2px solid rgba(45,106,79,0.5);
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        .timeline-item.active .timeline-dot {
+            background: var(--green-mid);
+            border-color: var(--gold);
+            box-shadow: 0 0 10px rgba(212,175,55,0.5);
+        }
+        .timeline-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.2rem;
+        }
+        .timeline-status {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .timeline-location {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 3rem;
+            display: none;
+        }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 3px solid rgba(212,175,55,0.2);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <nav class="navbar scrolled" id="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">☕</span>
+                <span class="logo-text">AFREEN TRADERS</span>
+            </a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="track-hero">
+            <div class="container">
+                <h1 style="font-family:var(--font-display); font-size:3rem; margin-bottom:1rem;">Track Your Order</h1>
+                <p style="color:var(--text-secondary); margin-bottom:3rem;">Enter your Shiprocket AWB number to track your premium tea shipment.</p>
+                
+                <form class="track-form" id="track-form">
+                    <input type="text" id="awb-input" class="track-input" placeholder="Enter AWB Number (e.g., 123456789)" required>
+                    <button type="submit" class="btn btn-primary"><span>Track Order</span></button>
+                </form>
+
+                <div class="loading-state" id="loading-state">
+                    <div class="spinner"></div>
+                    <p style="color:var(--gold);">Connecting to Logistics...</p>
+                </div>
+
+                <div class="tracking-result" id="tracking-result">
+                    <div class="shipment-header">
+                        <div>
+                            <h3 id="res-awb">AWB: </h3>
+                            <div class="shipment-meta" id="res-courier">Courier: </div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;">Expected Delivery</div>
+                            <div id="res-edd" style="color:var(--green-light);font-weight:600;font-size:1.1rem;"></div>
+                        </div>
+                    </div>
+
+                    <div class="timeline" id="timeline">
+                        <!-- Timeline items injected here -->
+                    </div>
+                </div>
+                
+                <div id="error-msg" style="color:#e74c3c; margin-top:1rem; display:none;"></div>
+            </div>
+        </section>
+    </main>
+
+    <script type="module">
+        import { trackByAWB } from './src/services/shiprocket.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const awbParam = urlParams.get('awb');
+            const input = document.getElementById('awb-input');
+            const form = document.getElementById('track-form');
+            
+            if (awbParam) {
+                input.value = awbParam;
+                fetchTracking(awbParam);
+            }
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const awb = input.value.trim();
+                if(awb) fetchTracking(awb);
+            });
+        });
+
+        async function fetchTracking(awb) {
+            const resultDiv = document.getElementById('tracking-result');
+            const loadingDiv = document.getElementById('loading-state');
+            const errorMsg = document.getElementById('error-msg');
+            const timeline = document.getElementById('timeline');
+            
+            resultDiv.style.display = 'none';
+            errorMsg.style.display = 'none';
+            loadingDiv.style.display = 'block';
+
+            try {
+                const res = await trackByAWB(awb);
+                loadingDiv.style.display = 'none';
+                
+                if (res && res.tracking_data) {
+                    const data = res.tracking_data;
+                    document.getElementById('res-awb').textContent = `AWB: ${awb}`;
+                    document.getElementById('res-courier').textContent = `Courier: ${data.courier_name || 'Assigned Courier'}`;
+                    document.getElementById('res-edd').textContent = data.etd || 'Awaiting Update';
+                    
+                    if (data.shipment_track && data.shipment_track.length > 0) {
+                        const trackInfo = data.shipment_track[0];
+                        // Usually Shiprocket returns tracking history in an array if detailed. 
+                        // For demo, we parse the current status and mock a timeline if history is empty.
+                        let historyHTML = '';
+                        
+                        if (data.shipment_track_activities && data.shipment_track_activities.length > 0) {
+                            historyHTML = data.shipment_track_activities.map((act, index) => `
+                                <div class="timeline-item ${index === 0 ? 'active' : ''}">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-date">${act.date || ''}</div>
+                                    <div class="timeline-status">${act.activity || 'Status Update'}</div>
+                                    <div class="timeline-location">${act.location || ''}</div>
+                                </div>
+                            `).join('');
+                        } else {
+                            historyHTML = `
+                                <div class="timeline-item active">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-date">${trackInfo.delivered_date || trackInfo.pickup_date || 'Recent'}</div>
+                                    <div class="timeline-status">${trackInfo.current_status || 'Order Processed'}</div>
+                                    <div class="timeline-location">Origin Facility</div>
+                                </div>
+                            `;
+                        }
+                        
+                        timeline.innerHTML = historyHTML;
+                        resultDiv.style.display = 'block';
+                    } else {
+                        throw new Error("No tracking details found for this AWB.");
+                    }
+                } else {
+                    throw new Error("Invalid response from tracking service.");
+                }
+            } catch (err) {
+                loadingDiv.style.display = 'none';
+                errorMsg.textContent = err.message || "Failed to fetch tracking details. Please try again.";
+                errorMsg.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -145,14 +145,13 @@ input, textarea, select { font-family:inherit; }
 .hero {
     min-height:100vh; display:flex; align-items:center;
     position:relative; overflow:hidden;
-    background: linear-gradient(135deg, #0a0a0a 0%, #0f1a14 50%, #0a0a0a 100%);
+    background: radial-gradient(circle at center, rgba(45,106,79,0.15) 0%, #050505 80%);
     padding-top:80px;
 }
-.hero-bg-text {
-    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    font-family:var(--font-display); font-size:clamp(8rem,18vw,16rem);
-    font-weight:700; color:rgba(201,168,76,0.03); letter-spacing:0.15em;
-    pointer-events:none; user-select:none; z-index:0; white-space:nowrap;
+.hero::before {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(circle at top right, rgba(201,168,76,0.05) 0%, transparent 40%);
+    pointer-events:none; z-index:0;
 }
 .hero-split {
     display:grid; grid-template-columns:1fr 1fr; gap:3rem;
@@ -179,11 +178,6 @@ input, textarea, select { font-family:inherit; }
     display:flex; align-items:center; justify-content:center;
     position:relative; min-height:400px;
 }
-.hero-product-glow {
-    position:absolute; width:320px; height:320px; border-radius:50%;
-    background:radial-gradient(circle,rgba(201,168,76,0.08) 0%,transparent 70%);
-    filter:blur(40px); z-index:0;
-}
 .hero-product-float {
     position:relative; z-index:1;
     animation:heroFloat 4s ease-in-out infinite;
@@ -191,15 +185,10 @@ input, textarea, select { font-family:inherit; }
 .hero-product-img {
     width:280px; height:auto; max-height:380px; object-fit:contain;
     filter:drop-shadow(0 20px 40px rgba(0,0,0,0.5));
-    animation:heroRotate 20s linear infinite;
 }
 @keyframes heroFloat {
     0%,100% { transform:translateY(0); }
     50% { transform:translateY(-15px); }
-}
-@keyframes heroRotate {
-    0% { transform:rotateY(0deg); }
-    100% { transform:rotateY(360deg); }
 }
 
 /* Steam Particles */
@@ -239,7 +228,6 @@ input, textarea, select { font-family:inherit; }
     .hero-tagline { margin-left:auto; margin-right:auto; }
     .hero-right { min-height:280px; }
     .hero-product-img { width:200px; }
-    .hero-product-glow { width:220px; height:220px; }
     .hero-scroll-indicator { display:none; }
 }
 

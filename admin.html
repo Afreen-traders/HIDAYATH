@@ -107,7 +107,31 @@
                             <p>No orders found.</p>
                         </div>
                     </div>
+                <!-- Rewards Admin Section -->
+                <div class="admin-section" style="margin-top:3rem;">
+                    <div class="section-header">
+                        <h2>Rewards &amp; Loyalty</h2>
+                    </div>
+                    <div class="stats-grid" style="grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));">
+                        <div class="stat-card">
+                            <div class="stat-label">Total Coins Issued</div>
+                            <div class="stat-value" id="stat-coins-issued">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Total Coins Redeemed</div>
+                            <div class="stat-value" id="stat-coins-redeemed">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">AFREENEW Used</div>
+                            <div class="stat-value" id="stat-coupons-used">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Spin Winners</div>
+                            <div class="stat-value" id="stat-spin-winners">0</div>
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </main>
     </div>
@@ -122,6 +146,7 @@
     </div>
 
     <script src="store.js"></script>
+    <script src="rewards.js"></script>
     <script src="admin.js"></script>
 </body>
 </html>

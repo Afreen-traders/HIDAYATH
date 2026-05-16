@@ -1,0 +1,247 @@
+/* ═══════════════════════════════════════════
+   AFREEN TRADERS — Rewards Ecosystem
+   Wallet · Referral · Spin Wheel · Coupons
+═══════════════════════════════════════════ */
+
+/* ===== ANNOUNCEMENT TICKER ===== */
+.announcement-ticker {
+    position:fixed; bottom:0; left:0; right:0; z-index:90;
+    background:linear-gradient(135deg,#0a0a0a 0%,#0f1a14 50%,#0a0a0a 100%);
+    border-top:1px solid rgba(201,168,76,0.15);
+    overflow:hidden; height:36px;
+    display:flex; align-items:center;
+}
+.ticker-track {
+    display:flex; white-space:nowrap;
+    animation:ticker 40s linear infinite;
+}
+.ticker-item {
+    display:inline-flex; align-items:center; gap:0.5rem;
+    padding:0 2rem; font-size:0.72rem; letter-spacing:0.08em;
+    color:var(--gold); text-transform:uppercase; flex-shrink:0;
+}
+.ticker-dot { width:3px; height:3px; border-radius:50%; background:var(--green-light); flex-shrink:0; }
+@keyframes ticker {
+    0% { transform:translateX(0); }
+    100% { transform:translateX(-50%); }
+}
+@media(max-width:768px) {
+    .announcement-ticker { bottom:60px; }
+}
+
+/* ===== COIN WALLET BADGE (Navbar) ===== */
+.wallet-badge {
+    display:flex; align-items:center; gap:0.35rem;
+    padding:0.3rem 0.7rem; border-radius:20px;
+    background:rgba(201,168,76,0.08); border:1px solid rgba(201,168,76,0.15);
+    color:var(--gold); font-size:0.72rem; font-weight:600;
+    transition:all var(--transition); cursor:pointer;
+}
+.wallet-badge:hover { background:rgba(201,168,76,0.15); }
+.wallet-coin-icon { font-size:0.85rem; }
+.wallet-count { letter-spacing:0.03em; }
+
+/* ===== SPIN WHEEL POPUP ===== */
+.spin-overlay {
+    position:fixed; inset:0; z-index:9998;
+    background:rgba(0,0,0,0.85); backdrop-filter:blur(12px);
+    display:none; align-items:center; justify-content:center;
+    flex-direction:column; opacity:0;
+    transition:opacity 0.4s ease;
+}
+.spin-overlay.show { display:flex; opacity:1; }
+
+.spin-container {
+    text-align:center; max-width:420px; width:90%;
+    padding:2rem;
+}
+.spin-title {
+    font-family:var(--font-display); font-size:1.8rem;
+    font-weight:300; color:var(--text-primary);
+    margin-bottom:0.5rem;
+}
+.spin-subtitle { color:var(--text-muted); font-size:0.85rem; margin-bottom:2rem; }
+
+/* Wheel */
+.wheel-wrapper {
+    position:relative; width:300px; height:300px;
+    margin:0 auto 2rem;
+}
+.wheel-outer {
+    position:absolute; inset:-8px; border-radius:50%;
+    border:2px solid rgba(201,168,76,0.3);
+    box-shadow:0 0 40px rgba(201,168,76,0.1), inset 0 0 40px rgba(201,168,76,0.05);
+}
+.wheel-canvas {
+    width:300px; height:300px; border-radius:50%;
+    transition:transform 5s cubic-bezier(0.17,0.67,0.12,0.99);
+}
+.wheel-pointer {
+    position:absolute; top:-12px; left:50%; transform:translateX(-50%);
+    width:0; height:0; border-left:12px solid transparent;
+    border-right:12px solid transparent; border-top:24px solid var(--gold);
+    filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    z-index:2;
+}
+.wheel-center {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:50px; height:50px; border-radius:50%;
+    background:linear-gradient(135deg,#1a4a3a,#0f2e23);
+    border:2px solid var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.7rem; font-weight:700; color:var(--gold);
+    letter-spacing:0.1em; z-index:3; cursor:pointer;
+    box-shadow:0 4px 20px rgba(0,0,0,0.4);
+    transition:all var(--transition);
+}
+.wheel-center:hover { transform:translate(-50%,-50%) scale(1.05); box-shadow:0 4px 25px rgba(201,168,76,0.3); }
+
+.spin-close {
+    position:absolute; top:1.5rem; right:1.5rem;
+    color:rgba(255,255,255,0.5); background:none; border:none;
+    font-size:1.5rem; cursor:pointer; transition:color var(--transition);
+}
+.spin-close:hover { color:white; }
+
+/* ===== CONGRATULATIONS POPUP ===== */
+.congrats-overlay {
+    position:fixed; inset:0; z-index:9999;
+    background:rgba(0,0,0,0.9); backdrop-filter:blur(15px);
+    display:none; align-items:center; justify-content:center;
+    opacity:0; transition:opacity 0.5s ease;
+}
+.congrats-overlay.show { display:flex; opacity:1; }
+
+.congrats-card {
+    text-align:center; max-width:400px; width:90%; padding:3rem 2rem;
+    background:var(--bg-card); border:1px solid rgba(201,168,76,0.2);
+    border-radius:var(--radius); position:relative; overflow:hidden;
+    animation:congratsSlide 0.6s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes congratsSlide {
+    from { transform:scale(0.8) translateY(30px); opacity:0; }
+    to { transform:scale(1) translateY(0); opacity:1; }
+}
+.congrats-glow {
+    position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+    background:radial-gradient(circle at center,rgba(201,168,76,0.06) 0%,transparent 50%);
+    animation:congratsGlow 3s ease-in-out infinite;
+}
+@keyframes congratsGlow {
+    0%,100% { opacity:0.5; transform:scale(1); }
+    50% { opacity:1; transform:scale(1.1); }
+}
+.congrats-emoji { font-size:3rem; margin-bottom:1rem; position:relative; z-index:1; }
+.congrats-title {
+    font-family:var(--font-display); font-size:2rem; font-weight:300;
+    color:var(--gold); margin-bottom:0.5rem; position:relative; z-index:1;
+}
+.congrats-prize {
+    font-size:1.1rem; font-weight:600; color:var(--text-primary);
+    margin-bottom:0.3rem; position:relative; z-index:1;
+}
+.congrats-desc {
+    font-size:0.85rem; color:var(--text-secondary);
+    margin-bottom:2rem; position:relative; z-index:1;
+}
+.congrats-btn {
+    padding:0.8rem 2.5rem; border-radius:var(--radius-sm);
+    background:var(--gold); color:var(--bg-primary);
+    font-weight:600; font-size:0.85rem; border:none;
+    cursor:pointer; transition:all var(--transition);
+    position:relative; z-index:1; text-transform:uppercase;
+    letter-spacing:0.1em;
+}
+.congrats-btn:hover { box-shadow:0 4px 20px rgba(201,168,76,0.4); }
+
+/* Confetti particles */
+.confetti-container {
+    position:fixed; inset:0; z-index:9998; pointer-events:none; overflow:hidden;
+}
+.confetti-piece {
+    position:absolute; width:8px; height:8px; top:-10px;
+    animation:confettiFall 3s ease-out forwards;
+}
+@keyframes confettiFall {
+    0% { transform:translateY(0) rotate(0deg); opacity:1; }
+    100% { transform:translateY(100vh) rotate(720deg); opacity:0; }
+}
+
+/* ===== CHECKOUT COIN REDEMPTION ===== */
+.coin-redeem-section {
+    padding:1.2rem; background:var(--bg-glass); border:1px solid var(--border);
+    border-radius:var(--radius-sm); margin-bottom:1.5rem;
+}
+.coin-redeem-header {
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:0.8rem;
+}
+.coin-redeem-label { font-size:0.85rem; font-weight:600; display:flex; align-items:center; gap:0.4rem; }
+.coin-redeem-balance { font-size:0.8rem; color:var(--gold); }
+.coin-redeem-row { display:flex; align-items:center; gap:0.8rem; }
+.coin-input {
+    flex:1; padding:0.6rem 0.8rem; background:var(--bg-secondary);
+    border:1px solid var(--border); border-radius:var(--radius-sm);
+    color:var(--text-primary); font-size:0.85rem; outline:none;
+}
+.coin-input:focus { border-color:var(--gold); }
+.coin-apply-btn {
+    padding:0.55rem 1.2rem; background:var(--gold); color:var(--bg-primary);
+    border:none; border-radius:var(--radius-sm); font-size:0.8rem;
+    font-weight:600; cursor:pointer; transition:all var(--transition);
+}
+.coin-apply-btn:hover { box-shadow:0 2px 12px rgba(201,168,76,0.3); }
+
+/* ===== WALLET DASHBOARD (Profile) ===== */
+.wallet-dashboard {
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1rem;
+    margin-bottom:2rem;
+}
+.wallet-stat {
+    padding:1.5rem; background:var(--bg-card); border:1px solid var(--border);
+    border-radius:var(--radius-sm); text-align:center;
+}
+.wallet-stat-value {
+    font-family:var(--font-display); font-size:1.8rem; font-weight:300;
+    color:var(--gold); margin-bottom:0.3rem;
+}
+.wallet-stat-label { font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.1em; }
+
+.referral-card {
+    padding:1.5rem; background:var(--bg-card); border:1px solid var(--border);
+    border-radius:var(--radius-sm); margin-bottom:1.5rem;
+}
+.referral-code-box {
+    display:flex; align-items:center; gap:0.8rem;
+    padding:1rem; background:var(--bg-secondary); border:1px dashed rgba(201,168,76,0.3);
+    border-radius:var(--radius-sm); margin:1rem 0;
+}
+.referral-code {
+    flex:1; font-size:1.1rem; font-weight:700; color:var(--gold);
+    letter-spacing:0.15em; font-family:var(--font-mono,monospace);
+}
+.referral-copy-btn {
+    padding:0.5rem 1rem; background:var(--gold); color:var(--bg-primary);
+    border:none; border-radius:var(--radius-sm); font-size:0.75rem;
+    font-weight:600; cursor:pointer; text-transform:uppercase;
+    letter-spacing:0.05em; transition:all var(--transition);
+}
+.referral-copy-btn:hover { box-shadow:0 2px 10px rgba(201,168,76,0.3); }
+
+.reward-history { list-style:none; padding:0; }
+.reward-history-item {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0.8rem 0; border-bottom:1px solid var(--border);
+    font-size:0.85rem;
+}
+.reward-history-item:last-child { border-bottom:none; }
+.reward-history-type { color:var(--text-secondary); }
+.reward-history-amount { font-weight:600; }
+.reward-history-amount.earned { color:var(--green-light); }
+.reward-history-amount.redeemed { color:#e74c3c; }
+
+@media(max-width:768px) {
+    .wallet-dashboard { grid-template-columns:1fr; }
+    .wheel-wrapper { width:260px; height:260px; }
+    .wheel-canvas { width:260px; height:260px; }
+}

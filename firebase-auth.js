@@ -90,6 +90,22 @@ function syncUserToLocal(firebaseUser) {
         createdAt: firebaseUser.metadata?.creationTime || new Date().toISOString()
     };
     localStorage.setItem('afreen_user', JSON.stringify(session));
+
+    /* Async Firestore init (non-blocking) */
+    import('./firebase-db.js').then(({ initializeUserRecord, processReferralCode }) => {
+        initializeUserRecord(session.id, session.name, session.email).then((refCode) => {
+            if (refCode) localStorage.setItem('afreen_referral_code', refCode);
+            
+            /* Process referral if signing up for the first time with a code */
+            const storedRefCode = sessionStorage.getItem('pending_referral_code');
+            if (storedRefCode && firebaseUser.metadata.creationTime === firebaseUser.metadata.lastSignInTime) {
+                processReferralCode(session.id, storedRefCode).then(() => {
+                    sessionStorage.removeItem('pending_referral_code');
+                });
+            }
+        });
+    }).catch(e => console.warn('DB init error', e));
+
     return session;
 }
 

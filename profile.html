@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="rewards.css">
     <style>
         /* Profile Page */
         .profile-page { padding:6rem 0 4rem; min-height:100vh; }
@@ -146,6 +147,9 @@
                         <li><button class="profile-nav-btn active" data-panel="panel-overview">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                             My Profile</button></li>
+                        <li><button class="profile-nav-btn" data-panel="panel-rewards">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 100 4h4a2 2 0 110 4H8"/><path d="M12 18V6"/></svg>
+                            Rewards Wallet</button></li>
                         <li><button class="profile-nav-btn" data-panel="panel-orders">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
                             Order History</button></li>
@@ -181,6 +185,58 @@
                         </div>
                     </div>
 
+                    <!-- Panel: Rewards Wallet -->
+                    <div class="profile-panel" id="panel-rewards">
+                        <div class="panel-header">
+                            <h2 class="panel-title">Rewards Wallet</h2>
+                            <p class="panel-desc">Manage your coins, referrals, and spin wheel rewards.</p>
+                        </div>
+                        <div class="panel-content">
+                            <div class="wallet-dashboard">
+                                <div class="wallet-stat">
+                                    <div class="wallet-stat-value" id="dash-wallet-coins">0</div>
+                                    <div class="wallet-stat-label">Total Coins</div>
+                                </div>
+                                <div class="wallet-stat">
+                                    <div class="wallet-stat-value" id="dash-wallet-earned">0</div>
+                                    <div class="wallet-stat-label">Lifetime Earned</div>
+                                </div>
+                                <div class="wallet-stat">
+                                    <div class="wallet-stat-value" id="dash-wallet-redeemed">0</div>
+                                    <div class="wallet-stat-label">Total Redeemed</div>
+                                </div>
+                            </div>
+                            
+                            <div class="referral-card">
+                                <h3>Earn More Coins</h3>
+                                <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:0.3rem;">Share your code. You and your friend both get 100 coins!</p>
+                                <div class="referral-code-box">
+                                    <span class="referral-code" id="dash-referral-code">LOADING...</span>
+                                    <button class="referral-copy-btn" id="dash-copy-ref">Copy Link</button>
+                                </div>
+                                <p style="font-size:0.8rem; color:var(--text-muted);">Friends referred: <strong id="dash-referral-count">0</strong></p>
+                            </div>
+
+                            <div style="margin-top:2rem;">
+                                <h3>Wallet History</h3>
+                                <ul class="reward-history" id="dash-wallet-history">
+                                    <div class="empty-state">
+                                        <p>No transactions yet.</p>
+                                    </div>
+                                </ul>
+                            </div>
+                            
+                            <div style="margin-top:2rem;">
+                                <h3>Spin & Win History</h3>
+                                <ul class="reward-history" id="dash-spin-history">
+                                    <div class="empty-state">
+                                        <p>No spins yet. Place an order above ₹2500 to spin!</p>
+                                    </div>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Panel: Orders -->
                     <div class="profile-panel" id="panel-orders">
                         <h2 class="panel-title">Order History</h2>
@@ -200,6 +256,7 @@
     </main>
 
     <script src="store.js"></script>
+    <script src="rewards.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const { Auth, Orders, Wishlist, Cart, PRODUCTS } = AfreenStore;
@@ -308,7 +365,73 @@
                 btn.addEventListener('click', () => { Wishlist.remove(parseInt(btn.dataset.id)); renderWishlist(); document.getElementById('d-wishlist-count').textContent = Wishlist.get().length; });
             });
         }
+        /* ── Rewards Dashboard ── */
+        async function initRewardsDashboard() {
+            if (!window.AfreenRewards) return;
+            const { Wallet, Referral, SpinWheel } = window.AfreenRewards;
+            
+            /* Wallet stats */
+            const coins = await Wallet.getBalance();
+            const logs = await Wallet.getLog();
+            document.getElementById('dash-wallet-coins').textContent = coins;
+            
+            let earned = 0, redeemed = 0;
+            logs.forEach(l => { if(l.type==='earned') earned+=l.amount; else redeemed+=l.amount; });
+            document.getElementById('dash-wallet-earned').textContent = earned;
+            document.getElementById('dash-wallet-redeemed').textContent = redeemed;
+            
+            const histEl = document.getElementById('dash-wallet-history');
+            if (logs.length > 0) {
+                histEl.innerHTML = logs.map(l => `
+                    <li class="reward-history-item">
+                        <div>
+                            <div class="reward-history-type">${l.reason}</div>
+                            <small style="color:var(--text-muted);font-size:0.75rem;">${new Date(l.timestamp).toLocaleDateString()}</small>
+                        </div>
+                        <div class="reward-history-amount ${l.type}">${l.type==='earned'?'+':'-'}${l.amount} 🪙</div>
+                    </li>
+                `).join('');
+            }
+
+            /* Referral stats */
+            const refCode = await Referral.getCode();
+            const refCount = await Referral.getCount();
+            document.getElementById('dash-referral-code').textContent = refCode;
+            document.getElementById('dash-referral-count').textContent = refCount;
+            
+            document.getElementById('dash-copy-ref').addEventListener('click', async (e) => {
+                const link = await Referral.getShareLink();
+                navigator.clipboard.writeText(link);
+                e.target.textContent = 'Copied!';
+                setTimeout(() => e.target.textContent = 'Copy Link', 2000);
+            });
+
+            /* Spin history */
+            const spins = await SpinWheel.getHistory();
+            const spinEl = document.getElementById('dash-spin-history');
+            if (spins.length > 0) {
+                spinEl.innerHTML = spins.map(s => `
+                    <li class="reward-history-item">
+                        <div>
+                            <div class="reward-history-type">Order #${s.orderId}</div>
+                            <small style="color:var(--text-muted);font-size:0.75rem;">${new Date(s.timestamp).toLocaleDateString()}</small>
+                        </div>
+                        <div class="reward-history-amount" style="color:var(--gold);">${s.prize}</div>
+                    </li>
+                `).join('');
+            }
+        }
+        
+        renderOrders();
         renderWishlist();
+        initRewardsDashboard();
+
+        /* Support direct linking to tabs */
+        if (window.location.hash) {
+            const tabId = 'panel-' + window.location.hash.substring(1);
+            const btn = document.querySelector(`[data-panel="${tabId}"]`);
+            if (btn) btn.click();
+        }
     });
     </script>
 </body>
