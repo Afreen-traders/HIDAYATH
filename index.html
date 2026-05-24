@@ -14,32 +14,11 @@
 </head>
 <body>
 
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="loading-screen">
-        <div class="loading-content">
-            <div class="loading-steam">
-                <div class="steam-line"></div>
-                <div class="steam-line"></div>
-                <div class="steam-line"></div>
-            </div>
-            <div class="loading-logo">AFREEN TRADERS</div>
-            <p class="loading-text">Tradition in every cup...</p>
-            <div class="loading-progress"><div class="loading-progress-bar"></div></div>
-        </div>
-    </div>
 
     <!-- Navbar -->
     <nav class="navbar" id="navbar">
         <div class="container nav-container">
             <a href="index.html" class="logo">
-                <div class="logo-mark">
-                    <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
-                        <path d="M20 4C12 4 6 10 6 18c0 5 2.5 9 6 12l2 2h12l2-2c3.5-3 6-7 6-12 0-8-6-14-14-14z" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
-                        <path d="M14 18c0-3.3 2.7-6 6-6" stroke="#c9a84c" stroke-width="1" opacity="0.5"/>
-                        <path d="M20 32v4" stroke="#c9a84c" stroke-width="1.5"/>
-                        <path d="M16 36h8" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
-                    </svg>
-                </div>
                 <span class="logo-text">AFREEN <span class="logo-accent">TRADERS</span></span>
             </a>
             <ul class="menu" id="nav-menu">
@@ -49,12 +28,12 @@
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
             <div class="nav-actions">
-                <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="theme-icon"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                <button class="nav-icon-btn" title="Search">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 </button>
                 <div id="nav-auth"></div>
                 <button class="cart-toggle" id="cart-toggle" aria-label="Open cart">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
                         <line x1="3" y1="6" x2="21" y2="6"/>
                         <path d="M16 10a4 4 0 01-8 0"/>
@@ -71,36 +50,47 @@
     </nav>
 
     <!-- ═══════════════════════════════════════════
-         HERO SECTION — Split Layout
+         HERO SECTION — Premium Split Layout
     ═══════════════════════════════════════════ -->
-    <section id="home" class="hero">
+    <section id="home" class="hero premium-hero">
         <div class="container hero-split">
             <!-- Left: Text Content -->
             <div class="hero-left">
-                <p class="hero-eyebrow">✦ PREMIUM TEA BLENDS ✦</p>
-                <h1 class="hero-heading">Simple. Pure.<br><span class="gold-text">Premium.</span></h1>
-                <p class="hero-tagline">Tradition in every cup. Crafted for everyday taste by Afreen Traders.</p>
-                <a href="products.html" class="btn btn-primary hero-cta">
-                    <span>Explore Collection</span>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </a>
-            </div>
-            <!-- Right: Featured Product -->
-            <div class="hero-right">
-                <div class="hero-product-float" id="hero-product">
-                    <img src="images/golden_250g.png" alt="Hidayath Golden Edition" class="hero-product-img">
-                </div>
-                <!-- Steam particles -->
-                <div class="hero-steam">
-                    <span></span><span></span><span></span><span></span><span></span>
+                <div class="hero-eyebrow animate-fade-up">Premium Tea Blends</div>
+                <h1 class="hero-heading animate-fade-up delay-1">Simple. Pure.<br><span class="gold-text">Premium.</span></h1>
+                <p class="hero-tagline animate-fade-up delay-2">Tradition in every cup. Crafted for everyday taste by Afreen Traders.</p>
+                <div class="hero-actions animate-fade-up delay-2">
+                    <a href="products.html" class="btn btn-luxury hero-cta">
+                        <span>Explore Collection</span>
+                    </a>
                 </div>
             </div>
-        </div>
-        <div class="hero-scroll-indicator">
-            <span>Scroll</span>
-            <div class="scroll-line"></div>
+            <!-- Right: Premium Product Showcase -->
+            <div class="hero-right animate-fade-in delay-1">
+                <div class="hero-image-wrap">
+                    <img src="images/golden_500g.png" alt="Afreen Premium Golden Tea" class="hero-premium-img">
+                </div>
+            </div>
         </div>
     </section>
+
+    <!-- Feature Strip -->
+    <div class="feature-strip">
+        <div class="container strip-grid">
+            <div class="strip-item">
+                <span class="strip-icon">✧</span>
+                <span class="strip-text">Premium Quality</span>
+            </div>
+            <div class="strip-item">
+                <span class="strip-icon">✧</span>
+                <span class="strip-text">Rich Flavour</span>
+            </div>
+            <div class="strip-item">
+                <span class="strip-icon">✧</span>
+                <span class="strip-text">100% Natural</span>
+            </div>
+        </div>
+    </div>
 
     <!-- ═══════════════════════════════════════════
          WHY CHOOSE US
@@ -283,8 +273,7 @@
         </div>
     </nav>
 
-    <div class="custom-cursor" id="custom-cursor"></div>
-    <div class="custom-cursor-dot" id="custom-cursor-dot"></div>
+
 
     <script src="store.js"></script>
     <script src="script.js"></script>
